@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<script>try{var _t=localStorage.getItem("bcpos_theme");if(_t==="dark"||(!_t&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}</script>
+<title>Bayad Center POS</title>
+<style>
+:root{--ink:#1e293b;--mut:#64748b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:system-ui,-apple-system,Roboto,Arial,sans-serif;background:linear-gradient(#f4f6ff,#e9e6fa);color:var(--ink);min-height:100vh}
+header{background:linear-gradient(135deg,#1d4ed8 0%,#6d28d9 100%);color:#fff;padding:14px 16px}
+h1{margin:0;font-size:24px}
+.sub{opacity:.9;font-size:14px;margin:4px 0 10px}
+.pills{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{border:0;border-radius:99px;padding:10px 18px;font-weight:800;font-size:14px;font-family:inherit}
+.pill.y{background:#fbbf24;color:#1e293b}.pill.g{background:#22c55e;color:#fff}.pill.w{background:#fff;color:#4338ca}
+nav{position:sticky;top:0;z-index:30;display:flex;gap:8px;overflow-x:auto;padding:10px 12px;background:#f4f5ff;border-bottom:1px solid #dfe3f5;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:1.5px solid #d5dbf3;background:#fff;color:#334155;border-radius:99px;padding:9px 14px;font-size:14px;font-weight:700;font-family:inherit}
+nav button.on{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border-color:transparent}
+main{padding:12px;max-width:820px;margin:0 auto}
+.card{background:#fff;border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 6px 20px rgba(60,60,140,.08)}
+.card h2{margin:0 0 10px;font-size:19px;color:#1d4ed8}
+label{display:block;font-weight:800;color:#475569;margin:12px 0 6px;font-size:15px}
+input,select,textarea{width:100%;padding:13px 14px;border:2px solid #dbe3f0;border-radius:16px;font-size:17px;background:#f8fafc;color:var(--ink);font-family:inherit}
+textarea{min-height:110px;font-size:15px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#6366f1;background:#fff}
+input.fee{background:#ecfdf5;border-color:#86efac}
+.btn{width:100%;margin-top:16px;padding:15px;border:0;border-radius:16px;font-size:18px;font-weight:800;color:#fff;background:linear-gradient(135deg,#2563eb,#4f46e5);font-family:inherit}
+.btn:active{transform:scale(.98)}
+.btn.sec{background:#e0e7ff;color:#3730a3}.btn.red{background:linear-gradient(135deg,#ef4444,#b91c1c)}.btn.grn{background:linear-gradient(135deg,#22c55e,#15803d)}
+.btn.sm{width:auto;display:inline-block;margin:6px 6px 0 0;padding:9px 14px;font-size:14px}
+.info{margin-top:12px;background:#eef2ff;border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.6;color:#312e81}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{border-radius:18px;padding:12px 14px;color:#fff}
+.kpi small{display:block;opacity:.92;font-size:13px}.kpi b{font-size:20px;word-break:break-all}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{color:#6366f1;text-align:left;padding:8px 6px;border-bottom:3px solid #e2e8f0;white-space:nowrap}
+td{padding:9px 6px;border-bottom:1px solid #eef2f7;vertical-align:top}
+.pos{color:#15803d;font-weight:800;white-space:nowrap}.neg{color:#dc2626;font-weight:800;white-space:nowrap}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.cnt{background:#e0e7ff;color:#4338ca;border-radius:99px;padding:7px 14px;font-weight:800;font-size:14px}
+.mut{color:var(--mut);font-size:14px}
+.warn{background:#fef3c7;border:1.5px solid #fbbf24;color:#78350f;border-radius:16px;padding:12px 14px;margin-bottom:12px;font-weight:600;font-size:14px}
+.row{display:flex;gap:8px;align-items:center;font-weight:700;color:#475569}
+.row input{flex:1;min-width:0}
+.li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #eef2f7}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.chip{border:0;background:#e0e7ff;color:#3730a3;border-radius:99px;padding:8px 14px;font-weight:700;font-size:14px;font-family:inherit}
+.ib{border:0;background:#f1f5f9;border-radius:10px;padding:6px 8px;font-size:15px;margin:1px}
+.ap{border:2px solid #e0e7ff;border-radius:16px;padding:12px;margin-top:10px}
+.tag{display:inline-block;background:#fee2e2;color:#b91c1c;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:800}
+footer{text-align:center;font-weight:800;color:#3730a3;font-size:20px;padding:22px 10px 40px}
+#modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:14px;overflow:auto}
+.box{background:#fff;border-radius:22px;padding:18px;width:100%;max-width:460px;margin:20px auto}
+.box h2{margin:0 0 6px;color:#1d4ed8;font-size:20px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;opacity:0;transition:opacity .25s;z-index:200;max-width:90%;text-align:center;pointer-events:none}
+
+/* ===== Dark mode ===== */
+html.dark{color-scheme:dark}
+html.dark body{background:linear-gradient(#0b1120,#111827);color:#e2e8f0}
+html.dark nav{background:#0f172a;border-bottom-color:#1e293b}
+html.dark nav button{background:#1e293b;border-color:#334155;color:#cbd5e1}
+html.dark nav button.on{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border-color:transparent}
+html.dark .card,html.dark .box{background:#1e293b;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+html.dark .card h2,html.dark .box h2{color:#93c5fd}
+html.dark label{color:#cbd5e1}
+html.dark input,html.dark select,html.dark textarea{background:#0f172a;border-color:#334155;color:#e2e8f0}
+html.dark input::placeholder,html.dark textarea::placeholder{color:#64748b}
+html.dark input:focus,html.dark select:focus,html.dark textarea:focus{border-color:#818cf8;background:#0b1120}
+html.dark input.fee{background:#052e16;border-color:#166534;color:#bbf7d0}
+html.dark .info{background:#1e1b4b;color:#c7d2fe}
+html.dark .info hr{border-top-color:#4338ca!important}
+html.dark .warn{background:#422006;border-color:#b45309;color:#fde68a}
+html.dark th{color:#a5b4fc;border-bottom-color:#334155}
+html.dark td{border-bottom-color:#334155}
+html.dark .li{border-bottom-color:#334155}
+html.dark .cnt,html.dark .chip{background:#312e81;color:#c7d2fe}
+html.dark .btn.sec{background:#312e81;color:#c7d2fe}
+html.dark .ib{background:#334155;color:#e2e8f0}
+html.dark .ap{border-color:#334155}
+html.dark .tag{background:#7f1d1d;color:#fecaca}
+html.dark .pos{color:#4ade80}
+html.dark .neg{color:#f87171}
+html.dark .mut,html.dark .row{color:#94a3b8}
+html.dark footer{color:#a5b4fc}
+html.dark #toast{background:#e2e8f0;color:#0f172a}
+html.dark [style*="color:#64748b"]{color:#94a3b8!important}
+html.dark [style*="color:#1d4ed8"]{color:#93c5fd!important}
+html.dark [style*="color:#0f766e"]{color:#5eead4!important}
+html.dark [style*="color:#15803d"]{color:#4ade80!important}
+html.dark [style*="background:#dcfce7"]{background:#052e16!important}
+html.dark [style*="color:#4f46e5"],html.dark [style*="color:#0f766e;font-weight"]{color:#a5b4fc!important}
+html.dark .info [style*="background:#dcfce7"] small,html.dark .card [style*="background:#dcfce7"] small{color:#bbf7d0}
+html.dark .card [style*="background:#dcfce7"] b[style*="color"]{color:#4ade80!important}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="ttl">💳 Bayad Center POS</h1>
+  <div class="sub"><span id="st">⏳ Naglo-load...</span> | Likha ni: Sir Leo</div>
+  <div class="pills"><span class="pill y" id="modePill">STAFF MODE</span><button class="pill w" id="authBtn" onclick="authClick()">Admin Login</button><button class="pill w" id="themeBtn" onclick="toggleTheme()" aria-label="Dark mode">🌙</button></div>
+</header>
+<nav id="nav"></nav>
+<main id="main"><div class="card">Naglo-load...</div></main>
+<footer>Likha ni: Sir Leo</footer>
+<div id="modal"></div>
+<div id="toast"></div>
+<script type="text/plain" id="gsrc">/*
+  Bayad Center POS — Online Sync + Awtomatikong Email
+  Likha ni: Sir Leo
+  HUWAG baguhin ang KEY sa ibaba. Ito ang password ng app mo.
+*/
+var KEY = '__KEY__';
+var TZ = 'Asia/Manila';
+var NAMES = {gcash: 'GCash', maya: 'Maya', bank: 'Bank', bills: 'Bills', load: 'Load', appt: 'Appointment', sim: 'Load n Sim', others: 'Others'};
+var HEAD = ['id', 'u', 'S', 'k', 'd', 'serbisyo', 'uri', 'detalye', 'pumasok', 'lumabas', 'tubo', 'del', 'json'];
+var NCOL = 13;
+
+/* ---- Patakbuhin ng isang beses (Run > setup) ---- */
+function setup() {
+  items_();
+  settings_();
+  var p = PropertiesService.getScriptProperties();
+  setTrigger_(parseInt(p.getProperty('HOUR') || '21', 10));
+  Logger.log('Handa na. Pwede nang i-Deploy bilang Web app.');
+}
+
+function sh_(name, head) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var s = ss.getSheetByName(name);
+  if (!s) {
+    s = ss.insertSheet(name);
+    s.getRange(1, 1, 1, head.length).setValues([head]);
+    s.setFrozenRows(1);
+    if (name === 'Items') {
+      s.getRange('A:A').setNumberFormat('@');
+      s.getRange('D:H').setNumberFormat('@');
+      s.getRange('M:M').setNumberFormat('@');
+    }
+  }
+  return s;
+}
+function items_() { return sh_('Items', HEAD); }
+function settings_() { return sh_('Settings', ['key', 'u', 'S', 'json']); }
+function props_() { return PropertiesService.getScriptProperties(); }
+function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+
+function doGet() { return out_({ok: true, msg: 'Bayad Center POS sync - gumagana'}); }
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  try {
+    var r = JSON.parse(e.postData.contents);
+    if (r.k !== KEY) return out_({ok: false, err: 'key'});
+    lock.waitLock(25000);
+    var now = Date.now(), res;
+    if (r.a === 'sync') res = sync_(r, now);
+    else if (r.a === 'mail') res = mail_(String(r.d), true);
+    else if (r.a === 'cfg') res = cfg_(r);
+    else if (r.a === 'ping') res = {ok: true};
+    else res = {ok: false, err: 'action'};
+    res.now = now;
+    return out_(res);
+  } catch (err) {
+    return out_({ok: false, err: String(err)});
+  } finally {
+    try { lock.releaseLock(); } catch (x) {}
+  }
+}
+
+function row_(it, now) {
+  return [String(it.id), Number(it.u) || 0, now, it.k || 'tx', String(it.d || ''), NAMES[it.s] || String(it.s || ''),
+    String(it.tl || ''), String(it.det || ''), Number(it.i) || 0, Number(it.o) || 0, Number(it.p) || 0, it.del ? 1 : 0, JSON.stringify(it)];
+}
+
+function getSet_() {
+  var s = settings_();
+  if (s.getLastRow() < 2) return null;
+  var v = s.getRange(2, 1, 1, 4).getValues()[0];
+  try { return {u: Number(v[1]), S: Number(v[2]), data: JSON.parse(v[3])}; } catch (e) { return null; }
+}
+function putSet_(u, now, data) {
+  settings_().getRange(2, 1, 1, 4).setValues([['settings', u, now, JSON.stringify(data)]]);
+}
+
+function sync_(r, now) {
+  var s = items_(), last = s.getLastRow();
+  var vals = last > 1 ? s.getRange(2, 1, last - 1, NCOL).getValues() : [];
+  var idx = {}, i;
+  for (i = 0; i < vals.length; i++) idx[String(vals[i][0])] = i;
+  var add = [], chg = [], wrote = {}, setWrote = false;
+  (r.items || []).forEach(function (it) {
+    if (!it || !it.id) return;
+    var id = String(it.id), row = row_(it, now);
+    if (idx.hasOwnProperty(id)) {
+      var j = idx[id];
+      if (j < vals.length) {
+        if (Number(vals[j][1]) >= Number(it.u)) return;
+        vals[j] = row; chg.push(j); wrote[id] = true;
+      } else {
+        var a = j - vals.length;
+        if (Number(add[a][1]) >= Number(it.u)) return;
+        add[a] = row; wrote[id] = true;
+      }
+    } else {
+      idx[id] = vals.length + add.length;
+      add.push(row); wrote[id] = true;
+    }
+  });
+  if (chg.length > 12) s.getRange(2, 1, vals.length, NCOL).setValues(vals);
+  else chg.forEach(function (j) { s.getRange(j + 2, 1, 1, NCOL).setValues([vals[j]]); });
+  if (add.length) {
+    s.getRange(s.getLastRow() + 1, 1, add.length, NCOL).setValues(add);
+    vals = vals.concat(add);
+  }
+  var set = getSet_();
+  if (r.settings && r.settings.u && r.settings.data && (!set || Number(set.u) < Number(r.settings.u))) {
+    putSet_(r.settings.u, now, r.settings.data);
+    set = getSet_();
+    setWrote = true;
+  }
+  var res = {ok: true};
+  if (r.pull === false) {
+    if (r.sget && set) res.settings = {u: set.u, data: set.data};
+    return res;
+  }
+  var since = Number(r.since || 0) - 2000, cand = [];
+  for (i = 0; i < vals.length; i++) {
+    var S = Number(vals[i][2]);
+    if (S > since && !wrote[String(vals[i][0])]) cand.push(vals[i]);
+  }
+  cand.sort(function (a, b) { return Number(a[2]) - Number(b[2]); });
+  res.more = false;
+  res.upto = now;
+  if (cand.length > 800) {
+    cand = cand.slice(0, 800);
+    res.more = true;
+    res.upto = Number(cand[cand.length - 1][2]);
+  }
+  res.items = [];
+  cand.forEach(function (row) { try { res.items.push(JSON.parse(row[12])); } catch (e) {} });
+  if (set && !setWrote && (!r.since || Number(set.S) > since)) res.settings = {u: set.u, data: set.data};
+  return res;
+}
+
+/* ---- Email ---- */
+function e_(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function money_(n) { return '₱' + Number(n || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function kv_(a, b) {
+  return '<tr><td style="padding:6px 8px;border-bottom:1px solid #eee">' + a + '</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right"><b>' + b + '</b></td></tr>';
+}
+
+function mail_(d, force) {
+  var p = props_();
+  if (!force && p.getProperty('MAILED') === d) return {ok: true, skipped: true};
+  var s = items_(), last = s.getLastRow();
+  var vals = last > 1 ? s.getRange(2, 1, last - 1, NCOL).getValues() : [];
+  var tx = [], op = null, cl = null;
+  vals.forEach(function (r) {
+    if (Number(r[11]) || String(r[4]) !== d) return;
+    var o;
+    try { o = JSON.parse(r[12]); } catch (e) { return; }
+    if (r[3] === 'open') op = o;
+    else if (r[3] === 'close') cl = o;
+    else tx.push(o);
+  });
+  if (!force && !tx.length && !cl) return {ok: true, skipped: true};
+  var T = {i: 0, o: 0, p: 0}, by = {};
+  tx.forEach(function (t) {
+    var n = NAMES[t.s] || t.s;
+    var b = by[n] = by[n] || {c: 0, i: 0, o: 0, p: 0};
+    b.c++; b.i += t.i; b.o += t.o; b.p += t.p;
+    T.i += t.i; T.o += t.o; T.p += t.p;
+    if (t.s === 'others' && t.ty === 'puhunan') T.a = (T.a || 0) + t.i;
+  });
+  var shop = 'Bayad Center POS', set = getSet_();
+  if (set && set.data && set.data.shop) shop = set.data.shop;
+  var h = '<div style="font-family:Arial,sans-serif;max-width:640px">';
+  h += '<h2 style="color:#1d4ed8;margin-bottom:4px">' + e_(shop) + '</h2><div style="color:#555;margin-bottom:12px">Buod ng ' + e_(d) + '</div>';
+  h += '<table style="border-collapse:collapse;width:100%;font-size:15px">';
+  h += kv_('⬇️ Pumasok', money_(T.i)) + kv_('⬆️ Lumabas', money_(T.o)) + kv_('💰 Tubo', money_(T.p)) + kv_('Bilang ng transaksyon', tx.length);
+  if (op) h += kv_('💼 Cash na dala sa umaga', money_(op.v)) + (T.a ? kv_('➕ Dagdag cash', money_(T.a)) : '') + kv_('👛 Dapat na cash ngayon', money_(op.v + T.i - T.o));
+  if (cl) h += kv_('✅ Cash na nabilang', money_(cl.counted)) + kv_('Sobra / Kulang', cl.diff ? money_(cl.diff) : 'Tama');
+  if (cl && cl.left !== undefined) h += kv_('🏪 Iniwan sa drawer', money_(cl.left)) + '<tr style="background:#dcfce7"><td style="padding:10px 8px;font-size:17px">💵 <b>CASH NA IUWI</b></td><td style="padding:10px 8px;text-align:right;font-size:20px;color:#15803d"><b>' + money_(cl.take) + '</b></td></tr>';
+  else h += '<tr><td colspan="2" style="padding:8px;color:#b45309">⚠️ Hindi pa naisara ang araw sa app.</td></tr>';
+  h += '</table>';
+  h += '<h3 style="margin-top:18px">Kada serbisyo</h3><table style="border-collapse:collapse;width:100%;font-size:14px"><tr style="background:#eef2ff"><th align="left" style="padding:6px">Serbisyo</th><th>Bilang</th><th align="right">Pasok</th><th align="right">Labas</th><th align="right">Tubo</th></tr>';
+  Object.keys(by).forEach(function (n) {
+    var b = by[n];
+    h += '<tr><td style="padding:5px 6px;border-bottom:1px solid #eee">' + e_(n) + '</td><td align="center">' + b.c + '</td><td align="right">' + money_(b.i) + '</td><td align="right">' + money_(b.o) + '</td><td align="right">' + money_(b.p) + '</td></tr>';
+  });
+  h += '</table>';
+  tx.sort(function (a, b) { return a.t - b.t; });
+  h += '<h3 style="margin-top:18px">Mga transaksyon</h3><table style="border-collapse:collapse;width:100%;font-size:13px"><tr style="background:#eef2ff"><th align="left" style="padding:5px">Oras</th><th align="left">Serbisyo</th><th align="left">Detalye</th><th align="right">Halaga</th><th align="right">Tubo</th></tr>';
+  tx.slice(0, 300).forEach(function (t) {
+    var tm = Utilities.formatDate(new Date(t.t), TZ, 'h:mm a');
+    var amt = t.i > 0 ? '+' + money_(t.i) : '-' + money_(t.o);
+    h += '<tr><td style="padding:4px 5px;border-bottom:1px solid #eee">' + e_(tm) + '</td><td>' + e_(NAMES[t.s] || t.s) + ' ' + e_(String(t.tl || '').split(' (')[0]) + '</td><td>' + e_(t.det || '') + '</td><td align="right">' + amt + '</td><td align="right">' + money_(t.p) + '</td></tr>';
+  });
+  h += '</table>';
+  if (tx.length > 300) h += '<p>...at ' + (tx.length - 300) + ' pa. Tingnan sa app o sa Google Sheet.</p>';
+  h += '<p style="color:#888;margin-top:20px">Likha ni: Sir Leo</p></div>';
+  var to = p.getProperty('MAIL_TO') || Session.getEffectiveUser().getEmail();
+  MailApp.sendEmail({to: to, subject: shop + ' - Buod ng ' + d, htmlBody: h, name: shop});
+  p.setProperty('MAILED', d);
+  return {ok: true, sent: to};
+}
+
+function nightly() {
+  var d = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
+  mail_(d, false);
+}
+
+function setTrigger_(h) {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'nightly') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('nightly').timeBased().atHour(h).nearMinute(0).everyDays(1).inTimezone(TZ).create();
+}
+
+function cfg_(r) {
+  var p = props_();
+  if (r.email !== undefined) p.setProperty('MAIL_TO', String(r.email || ''));
+  if (r.hour !== undefined) {
+    var h = parseInt(r.hour, 10);
+    if (h >= 0 && h <= 23) { p.setProperty('HOUR', String(h)); setTrigger_(h); }
+  }
+  return {ok: true};
+}
+</script>
+
+<script>
+'use strict';
+/* ========= Helpers ========= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const peso=n=>'₱'+(Number(n)||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>dstr(new Date());
+const tstr=d=>{let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(d.getMinutes())+' '+ap};
+const r2=n=>Math.round((Number(n)||0)*100)/100;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const num=s=>{const e=$(s);const v=e?parseFloat(e.value):0;return isFinite(v)&&v>0?v:0};
+function fmtDate(s){try{const d=new Date(s+'T00:00:00');if(isNaN(d))return s||'';return d.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}catch(e){return s||''}}
+function hash(s){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)}
+const hp=p=>hash('bc|'+p+'|leo');
+function rcode(){const r=()=>String(Math.floor(Math.random()*1e4)).padStart(4,'0');try{const a=new Uint32Array(2);crypto.getRandomValues(a);return String(a[0]%10000).padStart(4,'0')+'-'+String(a[1]%10000).padStart(4,'0')}catch(e){return r()+'-'+r()}}
+
+/* ========= Config ========= */
+const LS='bcpos_data_v1';
+const STAT=['Naka-schedule','Tapos na','Na-cancel'];
+const DEF_FEES={
+ gcash_in:{m:'unit',u:500,f:10},gcash_out:{m:'unit',u:500,f:10},
+ maya_in:{m:'unit',u:500,f:10},maya_out:{m:'unit',u:500,f:10},
+ bank_dep:{m:'unit',u:1000,f:20},bank_wd:{m:'unit',u:1000,f:20},bank_tr:{m:'flat',f:25},
+ bills:{m:'flat',f:15},load:{m:'pct',f:5},promo:{m:'pct',f:5},
+ nbi:{m:'flat',f:100},police:{m:'flat',f:100},dfa:{m:'flat',f:150}};
+const FEE_NAMES={gcash_in:'GCash Cash-In',gcash_out:'GCash Cash-Out',maya_in:'Maya Cash-In',maya_out:'Maya Cash-Out',bank_dep:'Bank Deposit',bank_wd:'Bank Withdraw',bank_tr:'Bank Transfer',bills:'Bills Payment',load:'Regular Load (tubo)',promo:'Promo / Data (tubo)',nbi:'NBI Appointment (singil)',police:'Police Clearance (singil)',dfa:'DFA Passport (singil)'};
+const CUST={k:'cust',l:'Customer / Mobile',ph:'Hal. Juan / 0917...'};
+const SV={
+ gcash:{n:'GCash',ic:'📱',h:'GCash Cash-In / Cash-Out',ty:[{k:'in',l:'Cash-In (Pumasok)',f:'in',r:'gcash_in'},{k:'out',l:'Cash-Out (Lumabas)',f:'out',r:'gcash_out'}],fl:[CUST]},
+ maya:{n:'Maya',ic:'💚',h:'Maya Cash-In / Cash-Out',ty:[{k:'in',l:'Cash-In (Pumasok)',f:'in',r:'maya_in'},{k:'out',l:'Cash-Out (Lumabas)',f:'out',r:'maya_out'}],fl:[CUST]},
+ bank:{n:'Bank',ic:'🏦',h:'Bank Deposit / Withdraw / Transfer',ty:[{k:'dep',l:'Deposit (Pumasok)',f:'in',r:'bank_dep'},{k:'wd',l:'Withdraw (Lumabas)',f:'out',r:'bank_wd'},{k:'tr',l:'Bank Transfer (Pumasok)',f:'in',r:'bank_tr'}],fl:[{k:'bank',l:'Bangko',o:()=>DB.s.banks},{k:'cust',l:'Account no. / Pangalan',ph:'Hal. Juan / 1234-5678'}]},
+ bills:{n:'Bills',ic:'🧾',h:'Bills Payment',ty:[{k:'bill',l:'Bayad ng Bills',f:'in',r:'bills'}],fl:[{k:'biller',l:'Biller',o:()=>DB.s.billers},{k:'cust',l:'Account no. / Pangalan',ph:'Account number'}]},
+ load:{n:'Load',ic:'📶',h:'Load (E-Load)',fee:'Tubo (₱)',ty:[{k:'load',l:'Regular Load',f:'incl',r:'load'},{k:'promo',l:'Promo / Data',f:'incl',r:'promo'}],fl:[{k:'net',l:'Network',o:()=>DB.s.nets},{k:'cust',l:'Mobile number',t:'tel',ph:'0917...'}]},
+ appt:{n:'Appointment',ic:'📅',h:'Appointment (NBI / Police / DFA)',amt:'Bayad sa gobyerno (₱)',fee:'Singil sa serbisyo (₱)',ty:[{k:'nbi',l:'NBI Clearance',f:'in',r:'nbi'},{k:'police',l:'Police Clearance',f:'in',r:'police'},{k:'dfa',l:'DFA Passport',f:'in',r:'dfa'}],fl:[{k:'cust',l:'Pangalan ng Customer',ph:'Juan Dela Cruz'},{k:'tel',l:'Contact no.',t:'tel',ph:'0917...'},{k:'date',l:'Petsa ng Appointment',t:'date',def:()=>today()},{k:'time',l:'Oras (optional)',t:'time'},{k:'ref',l:'Reference no. (optional)'},{k:'st',l:'Status',o:()=>STAT}]},
+ sim:{n:'Load n Sim',ic:'📲',h:'Load n Sim',amt:'Presyo kada piraso (₱)',sim:1,ty:[{k:'sim',l:'Bentang SIM',f:'sim'},{k:'simload',l:'SIM + Load Promo',f:'sim'}],fl:[{k:'item',l:'Item',o:()=>DB.s.sims},{k:'cust',l:'Customer (optional)'}]},
+ others:{n:'Others',ic:'➕',h:'Iba pang Pumasok / Lumabas',noFee:1,ty:[{k:'kita',l:'Kita (Pumasok)',f:'kita'},{k:'gastos',l:'Gastos (Lumabas)',f:'gastos'},{k:'puhunan',l:'Dagdag Puhunan (Pumasok)',f:'puhunan'},{k:'kuha',l:'Kuha ng May-ari (Lumabas)',f:'kuha'}],fl:[{k:'desc',l:'Paglalarawan',ph:'Hal. Photocopy / Kuryente'}]}
+};
+const TABS=[['gcash','📱','GCash'],['maya','💚','Maya'],['bank','🏦','Bank'],['bills','🧾','Bills'],['load','📶','Load'],['appt','📅','Appointment'],['sim','📲','Load n Sim'],['others','➕','Others'],['history','📜','History'],['settings','⚙️','Settings']];
+
+let DB=null,tab='gcash',isAdmin=false,pendingTab=null,feeManual=false,busy=0,fails=0,lock=0,lastSnap=0;
+let H={from:today(),to:today(),svc:'all',q:'',lim:100};
+
+/* ========= Computation ========= */
+function flow(k,v){
+ const F={in:()=>({i:v.a+v.f,o:0,p:v.f}),out:()=>v.fc?({i:v.f,o:v.a,p:v.f}):({i:0,o:v.a,p:v.f}),incl:()=>({i:v.a,o:0,p:v.f}),
+  sim:()=>({i:v.a*v.q,o:0,p:(v.a-v.c)*v.q}),kita:()=>({i:v.a,o:0,p:v.a}),gastos:()=>({i:0,o:v.a,p:-v.a}),
+  puhunan:()=>({i:v.a,o:0,p:0}),kuha:()=>({i:0,o:v.a,p:0})};
+ const r=F[k]();return {i:r2(r.i),o:r2(r.o),p:r2(r.p)}}
+function calcFee(k,a){const r=DB.s.fees[k];if(!r)return 0;if(r.m==='flat')return r.f;if(!(a>0))return 0;if(r.m==='unit')return r2(Math.ceil(a/r.u)*r.f);return r2(a*r.f/100)}
+function infoText(k,v,r){const L={
+ in:`Kunin sa customer: <b>${peso(r.i)}</b><br>Tubo mo: <b>${peso(r.p)}</b>`,
+ out:v.fc?`I-abot na cash: <b>${peso(v.a)}</b><br>Kunin na patong (cash): <b>${peso(v.f)}</b><br>Dapat i-send ng customer: <b>${peso(v.a)}</b><br>Tubo mo: <b>${peso(r.p)}</b>`:`I-abot na cash: <b>${peso(r.o)}</b><br>Dapat i-send ng customer: <b>${peso(v.a+v.f)}</b><br>Tubo mo: <b>${peso(r.p)}</b>`,
+ incl:`Babayaran ng customer: <b>${peso(r.i)}</b><br>Tubo mo: <b>${peso(r.p)}</b>`,
+ sim:`Kabuuang bayad: <b>${peso(r.i)}</b><br>Tubo mo: <b>${peso(r.p)}</b>`,
+ kita:`Papasok: <b>${peso(r.i)}</b>`,gastos:`Lalabas: <b>${peso(r.o)}</b>`,
+ puhunan:`Papasok (walang tubo): <b>${peso(r.i)}</b>`,kuha:`Lalabas (walang tubo): <b>${peso(r.o)}</b>`};return L[k]}
+const live=()=>DB.tx.filter(t=>!t.del);
+function sum(list){return list.reduce((s,t)=>(s.i+=t.i,s.o+=t.o,s.p+=t.p,s.n++,s),{i:0,o:0,p:0,n:0})}
+function detailOf(t){const S=SV[t.s],x=t.x||{};let p;
+ if(t.s==='appt')p=[x.cust,(x.date?fmtDate(x.date):'')+(x.time?' '+x.time:''),x.tel,x.st==='Tapos na'?'✅ Tapos':x.st==='Na-cancel'?'❌ Cancel':'🕒'];
+ else{p=S.fl.map(f=>x[f.k]);if(S.sim&&t.q>1)p.push('×'+t.q)}
+ return p.filter(Boolean).join(' • ')}
+
+/* ========= Storage (localStorage + IndexedDB + daily backups) ========= */
+const Store={db:null,
+ open(){return new Promise(r=>{try{const q=indexedDB.open('bcpos',1);q.onupgradeneeded=()=>{q.result.createObjectStore('kv');q.result.createObjectStore('bk')};q.onsuccess=()=>{this.db=q.result;r(1)};q.onerror=q.onblocked=()=>r(0)}catch(e){r(0)}})},
+ req(st,mode,fn){return new Promise(r=>{if(!this.db)return r(null);try{const t=this.db.transaction(st,mode);const q=fn(t.objectStore(st));t.oncomplete=()=>r(q?(q.result===undefined?null:q.result):true);t.onerror=t.onabort=()=>r(null)}catch(e){r(null)}})},
+ get(k){return this.req('kv','readonly',s=>s.get(k))},
+ put(v){return this.req('kv','readwrite',s=>s.put(v,'main'))},
+ putBk(k,v){return this.req('bk','readwrite',s=>s.put(v,k))},
+ getBk(k){return this.req('bk','readonly',s=>s.get(k))},
+ delBk(k){return this.req('bk','readwrite',s=>s.delete(k))},
+ async bks(){const ks=await this.req('bk','readonly',s=>s.getAllKeys());const vs=await this.req('bk','readonly',s=>s.getAll());if(!Array.isArray(ks)||!Array.isArray(vs))return [];return ks.map((k,i)=>({k,v:vs[i]})).filter(b=>typeof b.v==='string'&&/^\d{4}-\d\d-\d\d/.test(b.k)).sort((a,b)=>b.k<a.k?-1:1)},
+ async prune(){const ks=(await this.req('bk','readonly',s=>s.getAllKeys()))||[];const d=ks.filter(k=>/^\d{4}-\d\d-\d\d$/.test(k)).sort().reverse();for(const k of d.slice(30))await this.delBk(k)}
+};
+function fresh(){return {v:1,sv:0,tx:[],rec:[],sy:{url:'',key:'',pushed:0,since:0,su:0,ss:'',sinit:0,mq:[]},s:{shop:'Bayad Center POS',open:0,pin:hp('1234'),defPin:1,rec:rcode(),lb:0,opens:{},email:'',mailHour:21,outFee:'cash',drawer:0,
+ fees:JSON.parse(JSON.stringify(DEF_FEES)),
+ banks:['BDO','BPI','Metrobank','Landbank','UnionBank','PNB','Security Bank','RCBC','China Bank','Iba pa'],
+ billers:['PALECO','Roxas Water District','Meralco','Maynilad','Manila Water','Water District','PLDT','Converge','Globe Postpaid','Smart Postpaid','SSS','PhilHealth','Pag-IBIG','Cable / TV','Insurance','Loan / Credit Card','Iba pa'],
+ nets:['Globe','Smart','TNT','TM','GOMO','DITO','Sun','Iba pa'],
+ sims:['Globe SIM','Smart SIM','TNT SIM','TM SIM','DITO SIM','GOMO SIM','Iba pa']}}}
+const valid=d=>d&&typeof d==='object'&&Array.isArray(d.tx)&&d.s&&typeof d.s==='object';
+function migrate(d){const f=fresh().s;d.s=Object.assign({},f,d.s||{});d.s.fees=Object.assign({},f.fees,d.s.fees||{});
+ ['banks','billers','nets','sims'].forEach(k=>{if(!Array.isArray(d.s[k])||!d.s[k].length)d.s[k]=f[k]});
+ if(!d.s.opens||typeof d.s.opens!=='object')d.s.opens={};
+ if(!d.s.mig1){['Roxas Water District','PALECO'].forEach(b=>{if(!d.s.billers.some(x=>String(x).toLowerCase()===b.toLowerCase()))d.s.billers.unshift(b)});d.s.mig1=1}
+ d.tx=d.tx.filter(t=>t&&typeof t==='object'&&SV[t.s]);
+ d.tx.forEach(t=>{t.x=t.x||{};['a','f','i','o','p','t'].forEach(k=>{t[k]=Number(t[k])||0});t.tl=t.tl||'';t.d=t.d||today();t.id=t.id||uid();if(!(t.u>0))t.u=t.t||Date.now()});
+ if(!Array.isArray(d.rec))d.rec=[];d.rec=d.rec.filter(r=>r&&typeof r==='object'&&r.id&&r.k);
+ Object.keys(d.s.opens).forEach(k=>{if(!d.rec.some(r=>r.id==='open_'+k))d.rec.push({id:'open_'+k,k:'open',d:k,v:Number(d.s.opens[k])||0,u:Date.now()})});d.s.opens={};
+ d.sy=Object.assign({url:'',key:'',pushed:0,since:0,su:0,ss:'',sinit:0,mq:[]},d.sy||{});if(!Array.isArray(d.sy.mq))d.sy.mq=[];
+ return d}
+function setSt(ok){SY.localOk=ok;showSt()}
+function save(nosync){DB.sv=Date.now();const s=JSON.stringify(DB);let ok=false;
+ try{localStorage.setItem(LS,s);ok=true}catch(e){}
+ Store.put(s).then(k=>setSt(ok||!!k));
+ if(Date.now()-lastSnap>6e5){lastSnap=Date.now();Store.putBk(today(),s).then(()=>Store.prune())}
+ if(!nosync)schedSync()}
+async function boot(){
+ await Store.open();const c=[];
+ try{const a=localStorage.getItem(LS);if(a)c.push(a)}catch(e){}
+ const b=await Store.get('main');if(b)c.push(b);
+ let best=null,note='';
+ for(const x of c){try{const d=JSON.parse(x);if(valid(d)&&(!best||(d.sv||0)>(best.sv||0)))best=d}catch(e){}}
+ if(!best){
+  if(c.length)await Store.putBk('corrupt-'+Date.now(),c[0]);
+  for(const x of await Store.bks()){try{const d=JSON.parse(x.v);if(valid(d)){best=d;note='⚠️ Naibalik ang data mula sa auto-backup ng '+x.k.slice(0,10);break}}catch(e){}}
+ }
+ DB=best?migrate(best):fresh();
+ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+ save();render();if(note)setTimeout(()=>toast(note),600);startBg();askOpen()}
+
+/* ========= UI helpers ========= */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,2400)}
+function modal(h){const m=$('#modal');m.innerHTML='<div class="box">'+h+'</div>';m.style.display='flex'}
+function closeModal(){const m=$('#modal');m.style.display='none';m.innerHTML=''}
+const deny=()=>toast('🔒 Admin lang ang pwede dito');
+function fieldHTML(f,id,val){const o=f.o?f.o():null;let inner;
+ if(o){const L=o.slice();if(val&&!L.includes(val))L.push(val);inner=`<select id="${id}">${L.map(x=>`<option${x===val?' selected':''}>${esc(x)}</option>`).join('')}</select>`}
+ else inner=`<input id="${id}" type="${f.t||'text'}" placeholder="${esc(f.ph||'')}" value="${esc(val||'')}"${f.t==='tel'?' inputmode="tel"':''}>`;
+ return `<label>${f.l}</label>${inner}`}
+const K=(l,v,g)=>`<div class="kpi" style="background:linear-gradient(135deg,${g})"><small>${l}</small><b>${v}</b></div>`;
+
+/* ========= Auth ========= */
+function authClick(){if(isAdmin){isAdmin=false;if(tab==='settings')tab='gcash';render();toast('Naka-logout na')}else loginModal()}
+function loginModal(){modal(`<h2>🔐 Admin Login</h2><label>PIN</label><input id="l_pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Pumasok</button><button class="btn sec" onclick="pendingTab=null;closeModal()">Kanselahin</button><p style="text-align:center"><a href="#" onclick="recModal();return false" style="color:#4f46e5;font-weight:700">Nakalimutan ang PIN?</a></p>${DB.sy&&DB.sy.url?'':'<p style="text-align:center;margin-top:0"><a href="#" onclick="codeModal();return false" style="color:#0f766e;font-weight:700">☁️ I-connect sa Online (Setup Code)</a></p>'}`);setTimeout(()=>{const e=$('#l_pin');if(e)e.focus()},60)}
+function doLogin(){if(Date.now()<lock)return toast('⏳ Maghintay ng 30 segundo');
+ if(hp($('#l_pin').value)===DB.s.pin){isAdmin=true;fails=0;closeModal();if(pendingTab){tab=pendingTab;pendingTab=null}render();toast('✅ Admin Mode')}
+ else{fails++;if(fails>=5){lock=Date.now()+30000;fails=0}toast('❌ Maling PIN')}}
+function recModal(){modal(`<h2>🔑 I-reset ang PIN</h2><p class="mut">Ilagay ang Recovery Code (makikita ng admin sa Settings → Seguridad).</p><label>Recovery Code</label><input id="r_code" placeholder="0000-0000"><label>Bagong PIN (4-8 numero)</label><input id="r_pin" type="password" inputmode="numeric" maxlength="8"><button class="btn" onclick="doRec()">I-reset</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`)}
+function doRec(){if(Date.now()<lock)return toast('⏳ Maghintay ng 30 segundo');const c=$('#r_code').value.trim(),p=$('#r_pin').value;
+ if(c!==DB.s.rec){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}return toast('❌ Maling code')}
+ if(!/^\d{4,8}$/.test(p))return toast('PIN: 4 hanggang 8 numero');
+ DB.s.pin=hp(p);DB.s.defPin=0;DB.s.rec=rcode();save();closeModal();toast('✅ Na-reset ang PIN. Mag-login na.')}
+function go(t){if(t==='settings'&&!isAdmin){pendingTab='settings';loginModal();return}tab=t;render();window.scrollTo(0,0)}
+
+/* ========= Rendering ========= */
+function bannerHTML(){if(!isAdmin)return '';let b='';
+ if(DB.s.defPin)b+='<div class="warn">🔑 Default PIN (1234) pa rin ang gamit. Palitan sa Settings → Seguridad.</div>';
+ if(DB.tx.length&&Date.now()-DB.s.lb>7*864e5)b+='<div class="warn">💾 Wala ka pang backup sa nakaraang 7 araw. Pumunta sa Settings → Backup → I-download.</div>';
+ return b}
+function openFor(d){const r0=recOf('open_'+d);if(r0)return {v:r0.v,set:true};
+ const c=DB.rec.filter(x=>!x.del&&x.d<d&&(x.k==='open'||x.k==='close')).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:(a.k==='open'?-1:1)).pop();
+ let base=DB.s.open||0,fl=t=>t.d<d;
+ if(c){if(c.k==='close'){base=c.left!==undefined?c.left:c.counted;fl=t=>t.d>c.d&&t.d<d}else{base=c.v;fl=t=>t.d>=c.d&&t.d<d}}
+ const s=sum(live().filter(fl));return {v:r2(base+s.i-s.o),set:false}}
+function openBox(op){return `<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px"><div><small style="color:#64748b;font-weight:700">💼 Cash na dala sa pagbukas</small><br><b style="font-size:21px;color:#1d4ed8">${peso(op.v)}</b> ${op.set?'':'<span class="tag">Hindi pa nailalagay</span>'}</div>${(!op.set||isAdmin)?`<button class="btn sm" style="margin:0" onclick="openCashModal()">${op.set?'✏️ Baguhin':'Ilagay'}</button>`:'<span class="mut">🔒 Admin lang ang magbabago</span>'}</div>`}
+function openCashModal(){const op=openFor(today());if(op.set&&!isAdmin)return deny();
+ modal(`<h2>💼 Cash na dala sa pagbukas</h2><p class="mut">Ilagay ang perang nasa kamay/drawer bago magsimula ngayong araw (${fmtDate(today())}).</p><label>Halaga (₱)</label><input id="oc" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" value="${op.set||op.v>0?op.v:''}">${!op.set&&op.v>0?'<p class="mut">Ang nakalagay ay galing sa dulo ng huling araw. Ayusin kung iba.</p>':''}<button class="btn" onclick="saveOpen()">💾 I-save</button><button class="btn sec" onclick="closeModal()">Mamaya na</button>`);
+ setTimeout(()=>{const e=$('#oc');if(e)e.focus()},60)}
+function saveOpen(){const n=parseFloat($('#oc').value);if(!isFinite(n)||n<0)return toast('⚠️ Ilagay ang halaga');
+ if(openFor(today()).set&&!isAdmin)return deny();
+ upRec('open_'+today(),{k:'open',d:today(),v:r2(n),by:isAdmin?'Admin':'Staff'});save();closeModal();render();toast('✅ Na-save ang cash na dala')}
+function dashHTML(){const L=live(),td=sum(L.filter(t=>t.d===today())),op=openFor(today()),cash=op.v+td.i-td.o;
+ return openBox(op)+addBox()+'<div class="grid">'+K('⬇️ Pumasok ngayon',peso(td.i),'#22c55e,#15803d')+K('⬆️ Lumabas ngayon',peso(td.o),'#f87171,#b91c1c')+K('💰 Tubo ngayon',peso(td.p),'#6366f1,#4338ca')+K('👛 Cash sa kamay',peso(cash),'#f59e0b,#b45309')+'</div>'+closeBox()}
+function formHTML(sid){const S=SV[sid];
+ let h=`<div class="card"><h2>${S.ic} ${S.h}</h2>`;
+ if(S.ty.length>1)h+=`<label>Uri</label><select id="f_type" onchange="onType('${sid}')">${S.ty.map(t=>`<option value="${t.k}">${esc(t.l)}</option>`).join('')}</select>`;
+ S.fl.forEach(f=>{h+=fieldHTML(f,'f_'+f.k,f.def?f.def():'')});
+ if(S.sim)h+=`<label>Dami (piraso)</label><input id="f_qty" type="number" inputmode="numeric" min="1" step="1" value="1" oninput="info('${sid}')">`;
+ h+=`<label>${S.amt||'Halaga (₱)'}</label><input id="f_amt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" oninput="onAmt('${sid}')">`;
+ if(S.sim)h+=`<label>Puhunan kada piraso (₱)</label><input id="f_cost" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" oninput="info('${sid}')">`;
+ else if(!S.noFee)h+=`<label>${S.fee||'Patong (₱)'} <small style="font-weight:600;color:#64748b">— awtomatiko, pwedeng baguhin</small></label><input id="f_fee" class="fee" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" oninput="onFee('${sid}')">`;
+ return h+`<div class="info" id="f_info"></div><button class="btn" onclick="addTx('${sid}')">+ I-record ang ${S.n}</button></div>`}
+const curType=sid=>{const S=SV[sid],e=$('#f_type');return S.ty.find(t=>e&&t.k===e.value)||S.ty[0]};
+function autoFee(sid){const ty=curType(sid),el=$('#f_fee');if(!el||!ty.r)return;const f=calcFee(ty.r,num('#f_amt'));el.value=f>0?f:''}
+function onAmt(sid){if(!feeManual)autoFee(sid);info(sid)}
+function onType(sid){feeManual=false;autoFee(sid);info(sid)}
+function onFee(sid){feeManual=true;info(sid)}
+function info(sid){const S=SV[sid],ty=curType(sid);
+ const a=num('#f_amt'),f=(S.sim||S.noFee)?0:num('#f_fee'),q=S.sim?Math.max(1,Math.floor(num('#f_qty'))||1):1,c=S.sim?num('#f_cost'):0;
+ const v={a,f,q,c,fc:ty.f==='out'&&DB.s.outFee!=='wallet'},r=flow(ty.f,v),el=$('#f_info');
+ if(el)el.innerHTML=(a>0||f>0)?infoText(ty.f,v,r):'Ilagay ang halaga para makita ang kabuuan.'}
+function addTx(sid){if(busy)return;const S=SV[sid],ty=curType(sid);
+ const a=num('#f_amt'),f=(S.sim||S.noFee)?0:num('#f_fee'),q=S.sim?Math.max(1,Math.floor(num('#f_qty'))||1):1,c=S.sim?num('#f_cost'):0;
+ if(!(a>0||(sid==='appt'&&f>0))){toast('⚠️ Ilagay ang halaga');$('#f_amt').focus();return}
+ const x={};S.fl.forEach(fl=>{x[fl.k]=($('#f_'+fl.k).value||'').trim()});
+ if(sid==='appt'&&!x.cust){toast('⚠️ Ilagay ang pangalan ng customer');return}
+ if(S.sim&&c>a&&!confirm('Mas mataas ang puhunan kaysa presyo (lugi). Ituloy?'))return;
+ if(a>=100000&&!confirm('Malaki ang halaga: '+peso(a)+'. Tama ba?'))return;
+ const fc=ty.f==='out'&&DB.s.outFee!=='wallet';const r=flow(ty.f,{a,f,q,c,fc});
+ DB.tx.push({id:uid(),t:Date.now(),d:today(),s:sid,ty:ty.k,tl:ty.l,fl:ty.f,a,f,q,c,fc,i:r.i,o:r.o,p:r.p,x,by:isAdmin?'Admin':'Staff',del:0,u:Date.now()});
+ busy=1;setTimeout(()=>{busy=0},600);
+ save();render();toast('✅ Na-record: '+peso(r.i||r.o))}
+const thead=sd=>`<tr><th>${sd?'Petsa / Oras':'Oras'}</th><th>Uri</th><th>Detalye</th><th>Halaga</th><th>Tubo</th></tr>`;
+function rowsHTML(L,sd){if(!L.length)return `<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:18px">Wala pang transaksyon</td></tr>`;
+ return L.map(t=>{const S=SV[t.s],tm=tstr(new Date(t.t));
+  return `<tr><td>${sd?esc(t.d.slice(5))+'<br>':''}${tm}${isAdmin?`<br><button class="ib" onclick="editTx('${t.id}')">✏️</button><button class="ib" onclick="delTx('${t.id}')">🗑️</button>`:''}</td><td><b>${S.n}</b><br><small>${esc(t.tl.split(' (')[0])}</small></td><td>${esc(detailOf(t))}</td><td class="${t.i>0?'pos':'neg'}">${t.i>0?'+':'−'}${peso(t.i>0?t.i:t.o)}</td><td class="${t.p<0?'neg':'pos'}">${peso(t.p)}</td></tr>`}).join('')}
+function todayHTML(sid){const L=live().filter(t=>t.s===sid&&t.d===today()).sort((a,b)=>b.t-a.t);
+ return `<div class="card"><div class="hd"><h2 style="margin:0">📋 Mga Transaksyon Ngayong Araw</h2><span class="cnt">${L.length} records</span></div>${isAdmin?'':'<p class="mut" style="margin:0 0 8px">🔒 Admin lang ang pwedeng mag-edit / mag-delete. I-tap ang "Admin Login" sa taas.</p>'}<div class="tw"><table>${thead(false)}${rowsHTML(L,false)}</table></div></div>`}
+function apptHTML(){const td=today();
+ const L=live().filter(t=>t.s==='appt'&&(t.x.st||STAT[0])===STAT[0]).sort((a,b)=>((a.x.date||'9')+(a.x.time||'')).localeCompare((b.x.date||'9')+(b.x.time||'')));
+ return `<div class="card"><div class="hd"><h2 style="margin:0">🗓️ Mga Naka-schedule na Appointment</h2><span class="cnt">${L.length}</span></div>`+
+ (L.length?L.map(t=>{const d=t.x.date||'';const tg=d&&d===td?'<span class="tag">🔔 NGAYON</span>':(d&&d<td?'<span class="tag">⚠️ Lampas na</span>':'');
+  return `<div class="ap"><b>${esc(t.x.cust)}</b> ${tg}<br><small>${esc(t.tl)} • ${d?fmtDate(d):'Walang petsa'}${t.x.time?' '+esc(t.x.time):''}${t.x.tel?' • '+esc(t.x.tel):''}${t.x.ref?' • Ref: '+esc(t.x.ref):''}</small><br><button class="btn sm grn" onclick="setStatus('${t.id}','Tapos na')">✅ Tapos na</button><button class="btn sm sec" onclick="setStatus('${t.id}','Na-cancel')">❌ I-cancel</button></div>`}).join(''):'<p class="mut">Walang naka-schedule.</p>')+'</div>'}
+function setStatus(id,st){const t=DB.tx.find(z=>z.id===id);if(!t)return;t.x.st=st;t.u=Date.now();save();render();toast('✅ Na-update')}
+
+/* ========= History ========= */
+function histList(){const q=H.q.toLowerCase();
+ return live().filter(t=>(!H.from||t.d>=H.from)&&(!H.to||t.d<=H.to)&&(H.svc==='all'||t.s===H.svc)&&(!q||(detailOf(t)+' '+SV[t.s].n+' '+t.tl).toLowerCase().includes(q))).sort((a,b)=>b.t-a.t)}
+function histHTML(){
+ return `<div class="card"><h2>📜 History</h2><div class="chips"><button class="chip" onclick="setRange('today')">Ngayon</button><button class="chip" onclick="setRange('yest')">Kahapon</button><button class="chip" onclick="setRange('7')">7 Araw</button><button class="chip" onclick="setRange('month')">Buwan na ito</button><button class="chip" onclick="setRange('all')">Lahat</button></div>
+ <div class="grid" style="margin:0"><div><label>Mula</label><input type="date" id="h_from" value="${H.from}" onchange="H.from=this.value;histUpdate()"></div><div><label>Hanggang</label><input type="date" id="h_to" value="${H.to}" onchange="H.to=this.value;histUpdate()"></div></div>
+ <label>Serbisyo</label><select onchange="H.svc=this.value;histUpdate()"><option value="all">Lahat</option>${Object.keys(SV).map(k=>`<option value="${k}"${H.svc===k?' selected':''}>${SV[k].n}</option>`).join('')}</select>
+ <label>Hanapin (pangalan / number)</label><input type="search" value="${esc(H.q)}" onchange="H.q=this.value;histUpdate()" placeholder="Hal. Juan"></div><div id="hres">${histRes()}</div>`}
+function setRange(k){const n=new Date();let f,t=today();
+ if(k==='today')f=t;else if(k==='yest'){f=t=dstr(new Date(Date.now()-864e5))}
+ else if(k==='7')f=dstr(new Date(Date.now()-6*864e5));else if(k==='month')f=dstr(new Date(n.getFullYear(),n.getMonth(),1));else{f='';t=''}
+ H.from=f;H.to=t;H.lim=100;$('#h_from').value=f;$('#h_to').value=t;histUpdate()}
+function histUpdate(){const e=$('#hres');if(e)e.innerHTML=histRes()}
+function histRes(){const L=histList(),T=sum(L),by={};
+ L.forEach(t=>{const b=by[t.s]=by[t.s]||{i:0,o:0,p:0,n:0};b.i+=t.i;b.o+=t.o;b.p+=t.p;b.n++});
+ let h='<div class="grid">'+K('⬇️ Pumasok',peso(T.i),'#22c55e,#15803d')+K('⬆️ Lumabas',peso(T.o),'#f87171,#b91c1c')+K('💰 Tubo',peso(T.p),'#6366f1,#4338ca')+K('🧮 Bilang',T.n,'#64748b,#334155')+'</div>';
+ h+=`<div class="card"><h2>Buod kada serbisyo</h2><div class="tw"><table><tr><th>Serbisyo</th><th>Bilang</th><th>Pasok</th><th>Labas</th><th>Tubo</th></tr>${Object.keys(by).map(k=>`<tr><td><b>${SV[k].n}</b></td><td>${by[k].n}</td><td class="pos">${peso(by[k].i)}</td><td class="neg">${peso(by[k].o)}</td><td class="pos">${peso(by[k].p)}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:14px">Walang data</td></tr>'}</table></div></div>`;
+ h+=closesHTML();
+ h+=`<div class="card"><div class="hd"><h2 style="margin:0">Mga Transaksyon</h2><span class="cnt">${L.length}</span></div><div class="tw"><table>${thead(true)}${rowsHTML(L.slice(0,H.lim),true)}</table></div>${L.length>H.lim?'<button class="btn sec" onclick="H.lim+=100;histUpdate()">Magpakita pa</button>':''}<button class="btn sec" onclick="csv()">⬇️ I-download bilang CSV (Excel)</button></div>`;
+ return h}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+function csv(){const q=v=>{v=String(v==null?'':v);if(/^[=+\-@]/.test(v)&&isNaN(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
+ const R=[['Petsa','Oras','Serbisyo','Uri','Detalye','Pumasok','Lumabas','Tubo','Nag-record']];
+ histList().forEach(t=>R.push([t.d,tstr(new Date(t.t)),SV[t.s].n,t.tl,detailOf(t),t.i,t.o,t.p,t.by||'']));
+ dl('bayad-center-history.csv','\ufeff'+R.map(r=>r.map(q).join(',')).join('\n'),'text/csv')}
+
+/* ========= Admin: edit / delete ========= */
+function editTx(id){if(!isAdmin)return deny();const t=DB.tx.find(z=>z.id===id);if(!t)return;const S=SV[t.s];
+ let h=`<h2>✏️ I-edit ang Transaksyon</h2><label>Petsa</label><input id="e_d" type="date" value="${esc(t.d)}">`;
+ if(S.ty.length>1)h+=`<label>Uri</label><select id="e_type">${S.ty.map(y=>`<option value="${y.k}"${y.k===t.ty?' selected':''}>${esc(y.l)}</option>`).join('')}</select>`;
+ S.fl.forEach(f=>{h+=fieldHTML(f,'e_'+f.k,t.x[f.k])});
+ if(S.sim)h+=`<label>Dami</label><input id="e_q" type="number" inputmode="numeric" value="${t.q||1}">`;
+ h+=`<label>${S.amt||'Halaga (₱)'}</label><input id="e_a" type="number" inputmode="decimal" step="0.01" value="${t.a}">`;
+ if(S.sim)h+=`<label>Puhunan kada piraso (₱)</label><input id="e_c" type="number" inputmode="decimal" step="0.01" value="${t.c||0}">`;
+ else if(!S.noFee)h+=`<label>${S.fee||'Patong (₱)'}</label><input id="e_f" type="number" inputmode="decimal" step="0.01" value="${t.f}">`;
+ modal(h+`<button class="btn" onclick="saveEdit('${id}')">💾 I-save</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`)}
+function saveEdit(id){if(!isAdmin)return deny();const t=DB.tx.find(z=>z.id===id);if(!t)return;const S=SV[t.s];
+ const e=$('#e_type'),ty=S.ty.find(y=>y.k===(e?e.value:t.ty))||S.ty[0];
+ const a=num('#e_a'),f=(S.sim||S.noFee)?0:num('#e_f'),q=S.sim?Math.max(1,Math.floor(num('#e_q'))||1):1,c=S.sim?num('#e_c'):0,d=$('#e_d').value;
+ if(!d)return toast('Ilagay ang petsa');
+ S.fl.forEach(fl=>{t.x[fl.k]=($('#e_'+fl.k).value||'').trim()});
+ const fc=ty.f==='out'&&(t.fl==='out'?!!t.fc:DB.s.outFee!=='wallet');Object.assign(t,{d,ty:ty.k,tl:ty.l,fl:ty.f,a,f,q,c,fc,ed:Date.now(),u:Date.now()},flow(ty.f,{a,f,q,c,fc}));
+ save();closeModal();render();toast('✅ Na-update')}
+function delTx(id){if(!isAdmin)return deny();const t=DB.tx.find(z=>z.id===id);if(!t)return;
+ if(!confirm('Ilipat sa Basurahan ang transaksyong ito?\n'+SV[t.s].n+' • '+peso(t.i||t.o)))return;
+ t.del=1;t.dt=Date.now();t.u=Date.now();save();render();toast('🗑️ Nasa Basurahan na (pwedeng ibalik sa Settings)')}
+function restoreTx(id){if(!isAdmin)return deny();const t=DB.tx.find(z=>z.id===id);if(t&&!t.pg){t.del=0;delete t.dt;t.u=Date.now();save();render();toast('♻️ Naibalik')}}
+function purgeTx(id){if(!isAdmin)return deny();if(!confirm('Tuluyang burahin? Hindi na ito maibabalik.'))return;const t=DB.tx.find(z=>z.id===id);if(t){t.pg=1;t.del=1;t.u=Date.now();t.x={};t.a=t.f=t.i=t.o=t.p=0}save();render()}
+function purgeAll(){if(!isAdmin)return deny();if(!confirm('Tuluyang burahin ang LAHAT ng nasa Basurahan?'))return;DB.tx.forEach(t=>{if(t.del&&!t.pg){t.pg=1;t.u=Date.now();t.x={};t.a=t.f=t.i=t.o=t.p=0}});save();render()}
+function restoreAll(){if(!isAdmin)return deny();DB.tx.forEach(t=>{if(t.del&&!t.pg){t.del=0;delete t.dt;t.u=Date.now()}});save();render();toast('♻️ Naibalik lahat')}
+function wipeAll(){if(!isAdmin)return deny();if(prompt('I-type ang BURAHIN para ilipat LAHAT ng transaksyon sa Basurahan (maibabalik pa)')!=='BURAHIN')return;
+ DB.tx.forEach(t=>{if(!t.del){t.del=1;t.dt=Date.now();t.u=Date.now()}});save();render();toast('Nailipat lahat sa Basurahan')}
+
+/* ========= Settings (admin) ========= */
+function trashHTML(){const L=DB.tx.filter(t=>t.del&&!t.pg).sort((a,b)=>(b.dt||0)-(a.dt||0));if(!L.length)return '<p class="mut">Walang nasa basurahan.</p>';
+ return L.slice(0,100).map(t=>`<div class="li"><div><b>${SV[t.s].n}</b> • ${esc(t.tl.split(' (')[0])}<br><small>${esc(t.d)} • ${esc(detailOf(t))}<br>${t.i>0?'+'+peso(t.i):'−'+peso(t.o)}</small></div><div><button class="btn sm sec" onclick="restoreTx('${t.id}')">Ibalik</button><button class="btn sm red" onclick="purgeTx('${t.id}')">✖</button></div></div>`).join('')+`<button class="btn sm sec" onclick="restoreAll()">♻️ Ibalik lahat</button><button class="btn sm red" onclick="purgeAll()">Linisin ang Basurahan</button>`}
+function setHTML(){const s=DB.s;
+ const fr=Object.keys(FEE_NAMES).map(k=>{const r=s.fees[k];let inp;
+  if(r.m==='unit')inp=`₱<input id="fe_${k}_f" type="number" step="0.01" inputmode="decimal" value="${r.f}"> kada ₱<input id="fe_${k}_u" type="number" step="1" inputmode="numeric" value="${r.u}">`;
+  else if(r.m==='pct')inp=`<input id="fe_${k}_f" type="number" step="0.01" inputmode="decimal" value="${r.f}">% ng halaga`;
+  else inp=`₱<input id="fe_${k}_f" type="number" step="0.01" inputmode="decimal" value="${r.f}"> flat`;
+  return `<label>${FEE_NAMES[k]}</label><div class="row">${inp}</div>`}).join('');
+ const ta=(id,l,a)=>`<label>${l}</label><textarea id="${id}">${esc(a.join('\n'))}</textarea>`;
+ return `${syncCardHTML()}<div class="card"><h2>🏪 Tindahan</h2><label>Pangalan ng app / tindahan</label><input id="s_shop" value="${esc(s.shop)}"><label>Panimulang cash (unang araw lang, kung wala pang nailagay)</label><input id="s_open" type="number" step="0.01" inputmode="decimal" value="${s.open}"><label>Patong sa Cash-Out ay kinukuha sa...</label><select id="s_fee"><option value="cash"${s.outFee!=='wallet'?' selected':''}>Cash (hiwalay na ibibigay ng customer)</option><option value="wallet"${s.outFee==='wallet'?' selected':''}>E-wallet (kasama sa ipapadala ng customer)</option></select><label>Karaniwang iiwan sa drawer (₱)</label><input id="s_drawer" type="number" step="0.01" inputmode="decimal" value="${s.drawer||0}"><button class="btn" onclick="saveGen()">💾 I-save</button></div>
+ <div class="card"><h2>💵 Patong / Tubo (Awtomatiko)</h2><p class="mut">Ito ang kusang lalabas sa Patong. Pwede pa ring baguhin sa bawat transaksyon.</p>${fr}<button class="btn" onclick="saveFees()">💾 I-save ang Patong</button></div>
+ <div class="card"><h2>📝 Mga Listahan</h2><p class="mut">Isang item kada linya.</p>${ta('l_banks','Mga Bangko',s.banks)}${ta('l_billers','Mga Biller',s.billers)}${ta('l_nets','Mga Network (Load)',s.nets)}${ta('l_sims','Mga Item ng Load n Sim',s.sims)}<button class="btn" onclick="saveLists()">💾 I-save ang Listahan</button></div>
+ <div class="card"><h2>🔐 Seguridad</h2><label>Lumang PIN</label><input id="p_old" type="password" inputmode="numeric" maxlength="8"><label>Bagong PIN (4-8 numero)</label><input id="p_new" type="password" inputmode="numeric" maxlength="8"><label>Ulitin ang bagong PIN</label><input id="p_cnf" type="password" inputmode="numeric" maxlength="8"><button class="btn" onclick="chgPin()">Palitan ang PIN</button>
+ <div class="info">🔑 <b>Recovery Code:</b> <span style="font-size:20px;letter-spacing:2px;font-weight:800">${esc(s.rec)}</span><br><small>Isulat sa papel at itago. Ito lang ang paraan para ma-reset ang PIN kung makalimutan.</small></div></div>
+ <div class="card"><h2>🛟 Backup</h2><p>Huling backup: <b>${s.lb?new Date(s.lb).toLocaleString('en-PH'):'Wala pa'}</b></p><button class="btn grn" onclick="dlBackup()">⬇️ I-download ang Backup</button><label>Ibalik mula sa backup file</label><input type="file" accept=".json,application/json" onchange="restoreFile(this)">
+ <h3 style="font-size:16px;margin:18px 0 0">Auto-backup sa device (huling 30 araw)</h3><div id="bklist"><p class="mut">Naglo-load...</p></div></div>
+ <div class="card"><h2>🗑️ Basurahan</h2>${trashHTML()}</div>
+ <div class="card"><h2>⚠️ Delikado</h2><p class="mut">Ililipat sa Basurahan ang lahat ng transaksyon (maibabalik pa).</p><button class="btn red" onclick="wipeAll()">Burahin lahat ng transaksyon</button></div>`}
+function saveGen(){if(!isAdmin)return deny();DB.s.shop=$('#s_shop').value.trim()||'Bayad Center POS';DB.s.open=r2(num('#s_open'));DB.s.outFee=$('#s_fee').value==='wallet'?'wallet':'cash';DB.s.drawer=r2(num('#s_drawer'));save();render();toast('✅ Na-save')}
+function saveFees(){if(!isAdmin)return deny();Object.keys(FEE_NAMES).forEach(k=>{const r=DB.s.fees[k];r.f=num('#fe_'+k+'_f');if(r.m==='unit')r.u=Math.max(1,num('#fe_'+k+'_u')||1)});save();toast('✅ Na-save ang Patong')}
+function saveLists(){if(!isAdmin)return deny();
+ const P=id=>[...new Set($(id).value.split(/[\n,]/).map(x=>x.trim()).filter(Boolean))];
+ [['banks','#l_banks'],['billers','#l_billers'],['nets','#l_nets'],['sims','#l_sims']].forEach(([k,id])=>{const L=P(id);if(L.length)DB.s[k]=L});
+ save();render();toast('✅ Na-save ang Listahan')}
+function chgPin(){if(!isAdmin)return deny();const o=$('#p_old').value,n=$('#p_new').value,c=$('#p_cnf').value;
+ if(hp(o)!==DB.s.pin)return toast('❌ Mali ang lumang PIN');if(!/^\d{4,8}$/.test(n))return toast('PIN: 4 hanggang 8 numero');if(n!==c)return toast('❌ Hindi magkapareho ang PIN');
+ DB.s.pin=hp(n);DB.s.defPin=0;save();render();toast('✅ Napalitan ang PIN')}
+function dlBackup(){if(!isAdmin)return deny();DB.s.lb=Date.now();save();dl('bayad-center-backup-'+today()+'.json',JSON.stringify(Object.assign({},DB,{sy:undefined})),'application/json');render();toast('⬇️ Na-download ang backup')}
+function restoreFile(inp){if(!isAdmin)return deny();const f=inp.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const d=JSON.parse(r.result);if(!valid(d))throw 0;
+  if(!confirm('Papalitan ng backup na ito ang LAHAT ng kasalukuyang data ('+d.tx.length+' transaksyon). Ituloy?'))return;
+  Store.putBk(today()+'_pre-restore-'+Date.now(),JSON.stringify(DB));restoreSwap(d);save();render();toast('✅ Naibalik ang backup')}catch(e){toast('❌ Hindi valid na backup file')}};
+ r.readAsText(f)}
+async function fillBk(){const el=$('#bklist');if(!el)return;const L=await Store.bks();
+ if(!L.length){el.innerHTML='<p class="mut">Wala pa (o hindi suportado ng browser). Gamitin ang "I-download ang Backup".</p>';return}
+ el.innerHTML=L.map(b=>{let n='?';try{n=JSON.parse(b.v).tx.length}catch(e){}return `<div class="li"><div><b>${esc(b.k.slice(0,10))}</b>${b.k.length>10?' <small>(bago mag-restore)</small>':''}<br><small>${n} transaksyon • ${Math.round(b.v.length/1024)} KB</small></div><button class="btn sm sec" onclick="restoreBk('${esc(b.k)}')">Ibalik</button></div>`}).join('')}
+async function restoreBk(k){if(!isAdmin)return deny();const v=await Store.getBk(k);let d;try{d=JSON.parse(v)}catch(e){}
+ if(!valid(d))return toast('❌ Sira ang backup na ito');
+ if(!confirm('Ibalik ang data ng '+k.slice(0,10)+'? ('+d.tx.length+' transaksyon). Papalitan ang kasalukuyang data.'))return;
+ await Store.putBk(today()+'_pre-restore-'+Date.now(),JSON.stringify(DB));restoreSwap(d);save();render();toast('✅ Naibalik')}
+
+/* ========= Main render ========= */
+function render(){if(!DB)return;themeIcon();if(tab==='settings'&&!isAdmin)tab='gcash';
+ $('#ttl').textContent='💳 '+DB.s.shop;document.title=DB.s.shop;
+ const mp=$('#modePill');mp.textContent=isAdmin?'ADMIN MODE':'STAFF MODE';mp.className='pill '+(isAdmin?'g':'y');
+ $('#authBtn').textContent=isAdmin?'Logout':'Admin Login';
+ $('#nav').innerHTML=TABS.map(([k,ic,n])=>`<button class="${k===tab?'on':''}" onclick="go('${k}')">${ic} ${n}${k==='settings'&&!isAdmin?' 🔒':''}</button>`).join('');
+ let h=bannerHTML();
+ if(tab==='history')h+=dashHTML()+histHTML();
+ else if(tab==='settings')h+=setHTML();
+ else h+=dashHTML()+formHTML(tab)+(tab==='appt'?apptHTML():'')+todayHTML(tab);
+ $('#main').innerHTML=h;feeManual=false;
+ if(SV[tab]){autoFee(tab);info(tab)}
+ if(tab==='settings')fillBk();
+ const on=$('#nav .on');if(on&&on.scrollIntoView)on.scrollIntoView({inline:'center',block:'nearest'})}
+
+/* ========= Dark mode ========= */
+function themeIcon(){const b=$('#themeBtn');if(b)b.textContent=document.documentElement.classList.contains('dark')?'☀️':'🌙'}
+function toggleTheme(){const d=document.documentElement.classList.toggle('dark');try{localStorage.setItem('bcpos_theme',d?'dark':'light')}catch(e){}themeIcon()}
+/* ========= Isara ang Araw ========= */
+const SY={busy:false,again:false,timer:null,state:'',last:0,err:'',localOk:true,clean:new Map()};
+let lastDay=today();
+const typing=()=>{const a=document.activeElement;return !!(a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName))||$('#modal').style.display==='flex'};
+function recOf(id){return DB.rec.find(r=>r.id===id&&!r.del)}
+function upRec(id,o){let r=DB.rec.find(x=>x.id===id);if(!r){r={id};DB.rec.push(r)}Object.assign(r,o,{u:Date.now(),del:0});return r}
+const isAdd=t=>t.s==='others'&&t.ty==='puhunan';
+function dayFigs(d){const L=live().filter(t=>t.d===d),T=sum(L),op=openFor(d),add=r2(L.filter(isAdd).reduce((a,t)=>a+t.i,0));return {T,op,add,exp:r2(op.v+T.i-T.o)}}
+function addBox(){const d=today(),add=dayFigs(d).add;return `<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px"><div><small style="color:#64748b;font-weight:700">➕ Dagdag cash ngayong araw</small><br><b style="font-size:21px;color:#0f766e">${peso(add)}</b></div><button class="btn sm grn" style="margin:0" onclick="addCashModal()">➕ Dagdag Cash</button></div>`}
+function addCashModal(){modal(`<h2>➕ Dagdag Cash sa Kaha</h2><p class="mut">Gamitin kapag kulang o ubos na ang cash sa kaha at nagdagdag ka (galing sa bulsa, ipon, o ibang pondo). Kasama ito sa computation ng cash sa kaha.</p><label>Halaga (₱)</label><input id="ac_a" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"><label>Paalala (optional)</label><input id="ac_n" placeholder="Hal. Dagdag mula sa bulsa"><button class="btn grn" onclick="doAddCash()">✅ Idagdag</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`);setTimeout(()=>{const e=$('#ac_a');if(e)e.focus()},60)}
+function doAddCash(){const a=r2(num('#ac_a'));if(!(a>0))return toast('⚠️ Ilagay ang halaga');
+ if(a>=100000&&!confirm('Malaki ang halaga: '+peso(a)+'. Tama ba?'))return;
+ const n=($('#ac_n').value||'').trim()||'Dagdag cash';
+ DB.tx.push({id:uid(),t:Date.now(),d:today(),s:'others',ty:'puhunan',tl:'Dagdag Puhunan (Pumasok)',fl:'puhunan',a,f:0,q:1,c:0,fc:false,i:a,o:0,p:0,x:{desc:n},by:isAdmin?'Admin':'Staff',del:0,u:Date.now()});
+ save();closeModal();render();toast('✅ Naidagdag: '+peso(a))}
+const GRN='margin-top:8px;background:#dcfce7;border:2px solid #22c55e;border-radius:14px;padding:10px 12px;text-align:center';
+function closeBox(){const d=today(),c=recOf('close_'+d),F=dayFigs(d);let msg;
+ if(c)msg=`✅ <b>Naisara na ang araw</b><br><small>Cash na binilang: ${peso(c.counted)} • ${c.diff?(c.diff>0?'Sobra ':'Kulang ')+peso(Math.abs(c.diff)):'Tama ang cash'}</small>${c.left!==undefined?`<div style="${GRN}"><small>💵 CASH NA IUWI</small><br><b style="font-size:24px;color:#15803d">${peso(c.take)}</b><br><small>🏪 Iniwan sa drawer: <b>${peso(c.left)}</b></small></div>`:''}`;
+ else{const lv=DB.s.drawer||0;msg=`🌙 Tantiya kung isara ngayon:<br><small>Dapat na cash sa kaha: <b>${peso(F.exp)}</b> • Iiwan sa drawer: <b>${peso(lv)}</b></small><div style="${GRN}"><small>💵 CASH NA IUWI</small><br><b style="font-size:24px;color:#15803d">${peso(Math.max(0,F.exp-lv))}</b></div>`}
+ return `<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px"><div style="font-size:14px;flex:1">${msg}</div><button class="btn sm sec" style="margin:0" onclick="closeDayModal()">${c?'Isara ulit':'🔒 Isara ang Araw'}</button></div>`}
+function closeDayModal(){const d=today(),F=dayFigs(d),T=F.T,op=F.op,exp=F.exp,c=recOf('close_'+d),lv=c&&c.left!==undefined?c.left:(DB.s.drawer||0);
+ modal(`<h2>🔒 Isara ang Araw</h2><p class="mut">${fmtDate(d)} • ${T.n} transaksyon</p><div class="info">💼 Cash na dala sa umaga: <b>${peso(op.v)}</b><br>➕ Dagdag cash: <b>${peso(F.add)}</b><br>➕ Pumasok (transaksyon): <b>${peso(r2(T.i-F.add))}</b><br>➖ Lumabas na cash: <b>${peso(T.o)}</b><br>💰 Tubo ngayon: <b>${peso(T.p)}</b><hr style="border:0;border-top:1px solid #c7d2fe;margin:6px 0">👛 Dapat na cash sa kaha: <b>${peso(exp)}</b></div><label>Bilangin ang cash sa kaha (₱)</label><input id="cd" type="number" inputmode="decimal" step="0.01" min="0" value="${c?c.counted:exp}" oninput="cdDiff(${exp})"><label>Pera na IIWAN sa drawer para bukas (₱)</label><input id="cl" type="number" inputmode="decimal" step="0.01" min="0" value="${lv}" oninput="cdDiff(${exp})"><div class="info" id="cdi"></div><button class="btn grn" onclick="doClose(${exp})">✅ Isara${DB.sy.url?' at i-email ang buod':''}</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`);cdDiff(exp)}
+function cdDiff(exp){const cn=num('#cd'),lv=num('#cl'),df=r2(cn-exp),tk=r2(cn-lv),e=$('#cdi');if(!e)return;
+ e.innerHTML=(df===0?'✅ Tama ang cash':(df>0?'⚠️ Sobra: <b>':'⚠️ Kulang: <b>')+peso(Math.abs(df))+'</b>')+(lv>cn?'<br>⚠️ Mas malaki ang iiwan kaysa sa cash sa kaha':'')+`<div style="${GRN}"><small>💵 CASH NA IUWI</small><br><b style="font-size:26px;color:#15803d">${peso(Math.max(0,tk))}</b><br><small>🏪 Iiwan sa drawer: <b>${peso(lv)}</b></small></div>`}
+function doClose(exp){const d=today(),F=dayFigs(d),counted=r2(num('#cd')),left=r2(num('#cl'));
+ if(left>counted)return toast('⚠️ Mas malaki ang iiwan kaysa sa cash na nabilang');
+ const take=r2(counted-left);
+ upRec('close_'+d,{k:'close',d,i:r2(F.T.i),o:r2(F.T.o),p:r2(F.T.p),n:F.T.n,open:F.op.v,add:F.add,exp,counted,diff:r2(counted-exp),left,take,by:isAdmin?'Admin':'Staff',t:Date.now()});
+ DB.s.drawer=left;
+ if(DB.sy.url&&!DB.sy.mq.includes(d))DB.sy.mq.push(d);
+ save();closeModal();render();toast('✅ Naisara. Iuwi: '+peso(take)+(DB.sy.url?' — ipapadala ang email':''))}
+function closesHTML(){const CL=DB.rec.filter(r=>r.k==='close'&&!r.del&&(!H.from||r.d>=H.from)&&(!H.to||r.d<=H.to)).sort((a,b)=>a.d<b.d?1:-1);
+ if(!CL.length)return '';
+ return `<div class="card"><h2>🔒 Mga Pagsasara ng Araw</h2><div class="tw"><table><tr><th>Petsa</th><th>Pasok</th><th>Labas</th><th>Tubo</th><th>Cash</th><th>Diff</th><th>Iniwan</th><th>Iniuwi</th></tr>${CL.map(r=>`<tr><td>${esc(r.d.slice(5))}</td><td class="pos">${peso(r.i)}</td><td class="neg">${peso(r.o)}</td><td class="pos">${peso(r.p)}</td><td>${peso(r.counted)}</td><td class="${r.diff<0?'neg':'pos'}">${r.diff?peso(r.diff):'✔'}</td><td>${r.left!==undefined?peso(r.left):'–'}</td><td><b>${r.take!==undefined?peso(r.take):'–'}</b></td></tr>`).join('')}</table></div></div>`}
+function dayCheck(){if(!DB||lastDay===today())return;lastDay=today();H.from=H.to=today();render();if(!openFor(today()).set&&$('#modal').style.display!=='flex')openCashModal()}
+async function askOpen(){if(DB.sy.url){try{await Promise.race([syncNow(),new Promise(r=>setTimeout(r,6000))])}catch(e){}}
+ if(!openFor(today()).set&&$('#modal').style.display!=='flex')openCashModal()}
+
+/* ========= Online Sync (Google Sheet + Apps Script) ========= */
+function showSt(){const e=$('#st');if(!e)return;const Y=DB&&DB.sy;let t='💾 Naka-save';
+ if(Y&&Y.url)t=SY.state==='busy'?'🔄 Nagsi-sync...':SY.state==='ok'?'☁️ Naka-sync '+tstr(new Date(SY.last)):SY.state==='err'?'📴 Hindi pa na-sync (offline)':'☁️ Online sync';
+ if(SY.localOk===false)t='⚠️ HINDI NA-SAVE! Mag-backup agad';e.textContent=t}
+function sCore(){const s=Object.assign({},DB.s);['opens','lb'].forEach(k=>delete s[k]);return s}
+function genKey(){try{return Array.from(crypto.getRandomValues(new Uint8Array(10)),b=>b.toString(16).padStart(2,'0')).join('')}catch(e){return Math.random().toString(16).slice(2,12)+Date.now().toString(16)}}
+function copyText(t){return new Promise(res=>{
+ const fb=()=>{try{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}};
+ try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>res(true),()=>res(fb()));return}}catch(e){}
+ res(fb())})}
+async function copyScript(){if(!isAdmin)return deny();const Y=DB.sy;if(!Y.key){Y.key=genKey();save(true)}
+ const src=$('#gsrc').textContent.replace('__KEY__',Y.key);
+ if(await copyText(src))toast('✅ Nakopya ang script. I-paste sa Apps Script.');
+ else modal(`<h2>Kopyahin ang script</h2><p class="mut">I-hold ang text, piliin lahat, saka Copy.</p><textarea style="min-height:260px;font-size:12px" readonly onclick="this.select()">${esc(src)}</textarea><button class="btn sec" onclick="closeModal()">Isara</button>`)}
+function syncCardHTML(){const Y=DB.sy;
+ if(!Y.url)return `<div class="card"><h2>☁️ Online Sync (sabay ang Admin at Staff)</h2><p class="mut">Libre. Para magamit sa maraming phone/computer nang sabay, at may awtomatikong email tuwing gabi. Gumagana pa rin offline. <b>Mas madali ang setup sa computer</b> (o i-on ang "Desktop site" sa Chrome).</p>
+ <ol style="padding-left:20px;line-height:1.7;font-size:15px"><li>Buksan ang <b>sheets.new</b> gamit ang Gmail mo (gagawa ng bagong Google Sheet).</li><li>Menu <b>Extensions → Apps Script</b>. Burahin ang laman, saka <b>i-paste</b> ang script (pindutin ang button sa baba para makopya).</li><li>Piliin ang function na <b>setup</b> sa taas → <b>Run</b> → Allow (Advanced → Go to project).</li><li><b>Deploy → New deployment → Web app</b>. Execute as: <b>Me</b>. Who has access: <b>Anyone</b>. Pindutin ang Deploy.</li><li>Kopyahin ang <b>Web app URL</b> at idikit sa baba.</li></ol>
+ <button class="btn sec" onclick="copyScript()">📋 Kopyahin ang Script</button><label>Web app URL</label><input id="y_url" placeholder="https://script.google.com/macros/s/.../exec"><button class="btn grn" onclick="doConnect()">🔗 I-connect</button></div>`;
+ const st=SY.state==='ok'?'✅ Naka-sync '+tstr(new Date(SY.last)):SY.state==='busy'?'🔄 Nagsi-sync...':'📴 Hindi pa na-sync (offline o may problema)';
+ return `<div class="card"><h2>☁️ Online Sync</h2><p>${st}${SY.err?'<br><small class="mut">'+esc(SY.err)+'</small>':''}</p><button class="btn sm" onclick="syncNow(true)">🔄 I-sync ngayon</button><button class="btn sm sec" onclick="copyCode()">📋 Setup Code (para sa ibang device)</button>
+ <h3 style="font-size:16px;margin:16px 0 0">📧 Awtomatikong Email</h3><label>Email na pagpapadalhan</label><input id="y_mail" type="email" value="${esc(DB.s.email||'')}" placeholder="(blangko = ang Gmail na ginamit sa setup)"><label>Oras ng email tuwing gabi</label><select id="y_hr">${Array.from({length:24},(_,h)=>`<option value="${h}"${Number(DB.s.mailHour)===h?' selected':''}>${h%12||12}:00 ${h<12?'AM':'PM'}</option>`).join('')}</select>
+ <button class="btn sm" onclick="saveMailCfg()">💾 I-save</button><button class="btn sm sec" onclick="testMail()">✉️ Test email ngayon</button><br><button class="btn sm red" onclick="disconnect()">Idiskonekta</button></div>`}
+function friendly(e){const m=String(e&&e.message||e);if(m==='key')return 'Hindi tugma ang script. Kopyahin ulit ang script mula sa Settings at i-deploy ulit.';if(/fetch|network|abort/i.test(m))return 'Walang internet o hindi maabot ang server.';return m}
+async function doConnect(){if(!isAdmin)return deny();const Y=DB.sy,u=($('#y_url').value||'').trim();
+ if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u))return toast('❌ Mali ang URL (dapat nagtatapos sa /exec)');
+ if(!Y.key){Y.key=genKey()}
+ toast('Kinokonekta...');const old=Y.url;Y.url=u;
+ try{await call({a:'ping'})}catch(e){Y.url=old;return toast('❌ '+friendly(e))}
+ Y.pushed=0;Y.since=0;Y.sinit=0;save(true);render();syncNow(true)}
+function codeModal(){modal(`<h2>☁️ I-connect sa Online</h2><p class="mut">Idikit ang Setup Code mula sa Settings → Online Sync ng admin device.</p><textarea id="y_code" style="min-height:90px" placeholder="BCPOS1...."></textarea><button class="btn" onclick="doCode()">Ikonekta</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`)}
+async function doCode(){let o;try{o=JSON.parse(decodeURIComponent(escape(atob($('#y_code').value.trim().replace(/^BCPOS1\./,'').replace(/\s+/g,'')))))}catch(e){return toast('❌ Hindi valid na code')}
+ if(!o||!/^https:\/\/script\.google\.com\//.test(o.u||'')||!o.k)return toast('❌ Hindi valid na code');
+ const Y=DB.sy,ou=Y.url,ok=Y.key;Y.url=o.u;Y.key=o.k;
+ try{await call({a:'ping'})}catch(e){Y.url=ou;Y.key=ok;return toast('❌ '+friendly(e))}
+ closeModal();Y.pushed=0;Y.since=0;Y.sinit=0;Y.su=0;Y.ss='';save(true);render();toast('✅ Nakakonekta. Kinukuha ang data...');syncNow(true)}
+async function copyCode(){if(!isAdmin)return deny();const Y=DB.sy,c='BCPOS1.'+btoa(unescape(encodeURIComponent(JSON.stringify({u:Y.url,k:Y.key}))));
+ if(await copyText(c))toast('✅ Nakopya ang Setup Code');else modal(`<h2>Setup Code</h2><textarea style="min-height:120px;font-size:12px" readonly onclick="this.select()">${esc(c)}</textarea><button class="btn sec" onclick="closeModal()">Isara</button>`)}
+async function saveMailCfg(){if(!isAdmin)return deny();DB.s.email=($('#y_mail').value||'').trim();DB.s.mailHour=Number($('#y_hr').value)||0;save();
+ try{await call({a:'cfg',email:DB.s.email,hour:DB.s.mailHour});toast('✅ Na-save ang email settings')}catch(e){toast('⚠️ Na-save sa device pero hindi pa naipadala sa server: '+friendly(e))}}
+async function testMail(){if(!isAdmin)return deny();toast('Ipinapadala...');
+ try{await syncNow();await call({a:'mail',d:today(),force:true});toast('✉️ Naipadala! Tingnan ang email mo')}catch(e){toast('❌ '+friendly(e))}}
+function disconnect(){if(!isAdmin)return deny();if(!confirm('Idiskonekta ang device na ito sa online? Mananatili ang data sa device.'))return;DB.sy.url='';save(true);render()}
+async function call(body){const Y=DB.sy;body.k=Y.key;const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),30000);
+ try{const r=await fetch(Y.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body),signal:ctl.signal});
+  let j;try{j=await r.json()}catch(e){throw new Error('Mali ang sagot ng server. Na-deploy ba bilang "Anyone"?')}
+  if(!j.ok)throw new Error(j.err||'error');return j}
+ finally{clearTimeout(to)}}
+function applyRemote(res){const Y=DB.sy;let ch=0;
+ const mt=new Map(DB.tx.map(t=>[t.id,t])),mr=new Map(DB.rec.map(t=>[t.id,t]));
+ (res.items||[]).forEach(it=>{if(!it||typeof it!=='object'||!it.id)return;delete it.det;const rec=!!it.k;if(!rec&&!SV[it.s])return;
+  if(!rec){['a','f','i','o','p','t','u'].forEach(k=>{it[k]=Number(it[k])||0});it.x=it.x||{};it.tl=it.tl||'';it.d=it.d||today()}else it.u=Number(it.u)||0;
+  const M=rec?mr:mt,arr=rec?DB.rec:DB.tx,l=M.get(it.id);SY.clean.set(it.id,it.u);
+  if(!l){arr.push(it);M.set(it.id,it);ch++}else if(it.u>(l.u||0)){Object.keys(l).forEach(k=>delete l[k]);Object.assign(l,it);ch++}});
+ const st=res.settings;
+ if(st&&st.data&&(st.u||0)>(Y.su||0)){const o=DB.s.opens,lb=DB.s.lb;Object.assign(DB.s,st.data);DB.s.opens=o||{};DB.s.lb=lb;Y.su=st.u;Y.ss=JSON.stringify(sCore());ch++}
+ return ch}
+function schedSync(ms){const Y=DB&&DB.sy;if(!Y||!Y.url)return;clearTimeout(SY.timer);SY.timer=setTimeout(()=>syncNow(),ms||2500)}
+async function syncNow(manual){const Y=DB&&DB.sy;if(!Y||!Y.url||!Y.key)return;
+ if(SY.busy){SY.again=true;return}
+ if(navigator.onLine===false&&!manual){SY.state='err';SY.err='Offline';showSt();return}
+ SY.busy=true;SY.state='busy';SY.err='';showSt();let persist=false,ch=0;
+ try{
+  if(!Y.sinit){const r=await call({a:'sync',pull:false,sget:true,items:[]});if(r.settings)ch+=applyRemote({settings:r.settings});Y.sinit=1;persist=true}
+  const stamp=Date.now(),sj=JSON.stringify(sCore());let setObj=null;
+  if(sj!==Y.ss){Y.su=Date.now();setObj={u:Y.su,data:sCore()}}
+  const dirty=DB.tx.concat(DB.rec).filter(t=>t.u>Y.pushed&&SY.clean.get(t.id)!==t.u).map(t=>Object.assign({},t,(!t.k&&SV[t.s])?{det:detailOf(t)}:{}));
+  const chunks=Math.ceil(dirty.length/80);
+  if(setObj&&!chunks)await call({a:'sync',pull:false,items:[],settings:setObj});
+  for(let i=0;i<chunks;i++)await call({a:'sync',pull:false,items:dirty.slice(i*80,i*80+80),settings:i===0?setObj:null});
+  if(dirty.length||setObj){Y.pushed=stamp-1;persist=true}
+  if(setObj)Y.ss=sj;
+  let since=Y.since,g=0,res;
+  do{res=await call({a:'sync',since,items:[]});ch+=applyRemote(res);since=res.more?res.upto:res.now}while(res.more&&++g<60);
+  Y.since=since;
+  if(ch||persist)save(true);
+  if(ch&&!typing())render();
+  SY.state='ok';SY.last=Date.now();
+  for(const d of Y.mq.slice()){try{await call({a:'mail',d,force:true});Y.mq=Y.mq.filter(x=>x!==d);save(true)}catch(e){SY.err='Email: '+friendly(e);break}}
+ }catch(e){SY.state='err';SY.err=friendly(e)}
+ finally{SY.busy=false;showSt()}
+ if(manual)toast(SY.state==='ok'?'✅ Naka-sync':'❌ Hindi na-sync: '+SY.err);
+ if(SY.again){SY.again=false;schedSync(1500)}}
+function startBg(){lastDay=today();setInterval(()=>{dayCheck();if(!document.hidden)schedSync(100)},45000);
+ try{window.addEventListener('online',()=>schedSync(500));window.addEventListener('offline',()=>{SY.state='err';showSt()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){dayCheck();schedSync(300)}})}catch(e){}
+ schedSync(800)}
+function restoreSwap(d){const oy=DB.sy;DB=migrate(d);const n=Date.now();DB.tx.forEach(t=>{t.u=n});DB.rec.forEach(t=>{t.u=n});
+ DB.sy=Object.assign({},DB.sy,{url:oy.url,key:oy.key,pushed:0,since:0,su:0,ss:'',sinit:0,mq:[]});SY.clean.clear()}
+
+boot();
+</script>
+</body>
+</html>
