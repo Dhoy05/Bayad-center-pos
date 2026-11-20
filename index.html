@@ -288,6 +288,13 @@ function mail_(d, force) {
   if (cl && cl.left !== undefined) h += kv_('🏪 Iniwan sa drawer', money_(cl.left)) + '<tr style="background:#dcfce7"><td style="padding:10px 8px;font-size:17px">💵 <b>CASH NA IUWI</b></td><td style="padding:10px 8px;text-align:right;font-size:20px;color:#15803d"><b>' + money_(cl.take) + '</b></td></tr>';
   else h += '<tr><td colspan="2" style="padding:8px;color:#b45309">⚠️ Hindi pa naisara ang araw sa app.</td></tr>';
   h += '</table>';
+  if (cl && cl.bd) {
+    var bk = Object.keys(cl.bd).filter(function (k) { return k !== 'x'; }).map(Number).sort(function (a, b) { return b - a; });
+    h += '<h3 style="margin-top:18px">🧾 Bilang ng cash</h3><table style="border-collapse:collapse;width:100%;font-size:14px">';
+    bk.forEach(function (k) { h += kv_('₱' + k + ' × ' + cl.bd[k], money_(k * cl.bd[k])); });
+    if (cl.bd.x) h += kv_('Iba pa', money_(cl.bd.x));
+    h += '</table>';
+  }
   h += '<h3 style="margin-top:18px">Kada serbisyo</h3><table style="border-collapse:collapse;width:100%;font-size:14px"><tr style="background:#eef2ff"><th align="left" style="padding:6px">Serbisyo</th><th>Bilang</th><th align="right">Pasok</th><th align="right">Labas</th><th align="right">Tubo</th></tr>';
   Object.keys(by).forEach(function (n) {
     var b = by[n];
@@ -666,19 +673,31 @@ function closeBox(){const d=today(),c=recOf('close_'+d),F=dayFigs(d);let msg;
  else{const lv=DB.s.drawer||0;msg=`🌙 Tantiya kung isara ngayon:<br><small>Dapat na cash sa kaha: <b>${peso(F.exp)}</b> • Iiwan sa drawer: <b>${peso(lv)}</b></small><div style="${GRN}"><small>💵 CASH NA IUWI</small><br><b style="font-size:24px;color:#15803d">${peso(Math.max(0,F.exp-lv))}</b></div>`}
  return `<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px"><div style="font-size:14px;flex:1">${msg}</div><button class="btn sm sec" style="margin:0" onclick="closeDayModal()">${c?'Isara ulit':'🔒 Isara ang Araw'}</button></div>`}
 function closeDayModal(){const d=today(),F=dayFigs(d),T=F.T,op=F.op,exp=F.exp,c=recOf('close_'+d),lv=c&&c.left!==undefined?c.left:(DB.s.drawer||0);
- modal(`<h2>🔒 Isara ang Araw</h2><p class="mut">${fmtDate(d)} • ${T.n} transaksyon</p><div class="info">💼 Cash na dala sa umaga: <b>${peso(op.v)}</b><br>➕ Dagdag cash: <b>${peso(F.add)}</b><br>➕ Pumasok (transaksyon): <b>${peso(r2(T.i-F.add))}</b><br>➖ Lumabas na cash: <b>${peso(T.o)}</b><br>💰 Tubo ngayon: <b>${peso(T.p)}</b><hr style="border:0;border-top:1px solid #c7d2fe;margin:6px 0">👛 Dapat na cash sa kaha: <b>${peso(exp)}</b></div><label>Bilangin ang cash sa kaha (₱)</label><input id="cd" type="number" inputmode="decimal" step="0.01" min="0" value="${c?c.counted:exp}" oninput="cdDiff(${exp})"><label>Pera na IIWAN sa drawer para bukas (₱)</label><input id="cl" type="number" inputmode="decimal" step="0.01" min="0" value="${lv}" oninput="cdDiff(${exp})"><div class="info" id="cdi"></div><button class="btn grn" onclick="doClose(${exp})">✅ Isara${DB.sy.url?' at i-email ang buod':''}</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`);cdDiff(exp)}
+ modal(`<h2>🔒 Isara ang Araw</h2><p class="mut">${fmtDate(d)} • ${T.n} transaksyon</p><div class="info">💼 Cash na dala sa umaga: <b>${peso(op.v)}</b><br>➕ Dagdag cash: <b>${peso(F.add)}</b><br>➕ Pumasok (transaksyon): <b>${peso(r2(T.i-F.add))}</b><br>➖ Lumabas na cash: <b>${peso(T.o)}</b><br>💰 Tubo ngayon: <b>${peso(T.p)}</b><hr style="border:0;border-top:1px solid #c7d2fe;margin:6px 0">👛 Dapat na cash sa kaha: <b>${peso(exp)}</b></div>${bdHTML(c&&c.bd,exp)}<label>Kabuuang cash sa kaha (₱)</label><input id="cd" type="number" inputmode="decimal" step="0.01" min="0" value="${c?c.counted:exp}" oninput="cdDiff(${exp})"><label>Pera na IIWAN sa drawer para bukas (₱)</label><input id="cl" type="number" inputmode="decimal" step="0.01" min="0" value="${lv}" oninput="cdDiff(${exp})"><div class="info" id="cdi"></div><button class="btn grn" onclick="doClose(${exp})">✅ Isara${DB.sy.url?' at i-email ang buod':''}</button><button class="btn sec" onclick="closeModal()">Kanselahin</button>`);cdDiff(exp)}
+const DEN=[1000,500,200,100,50,20,10,5,1];
+function bdHTML(bd,exp){bd=bd||{};
+ return `<div class="ap"><b>🧾 Bilang ng cash (kada piraso)</b><p class="mut" style="margin:4px 0 8px">Isulat kung ilan ang bawat bill/barya. Awtomatikong lalabas sa baba ang kabuuan.</p>`+
+ DEN.map(d=>`<div class="row" style="margin:5px 0"><span style="min-width:72px">₱${d.toLocaleString('en-PH')}</span>×<input id="bd_${d}" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="${bd[d]||''}" oninput="bdSum(${exp})"><span id="bs_${d}" style="min-width:96px;text-align:right">${bd[d]?peso(bd[d]*d):''}</span></div>`).join('')+
+ `<div class="row" style="margin:5px 0"><span style="min-width:72px">Iba pa ₱</span><input id="bd_x" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00 (sentimos, atbp.)" value="${bd.x||''}" oninput="bdSum(${exp})"></div>
+ <div style="text-align:right;margin-top:8px">Kabuuan: <b id="bd_t" style="font-size:18px">${peso(bdTotal(bd))}</b></div></div>`}
+function bdTotal(bd){bd=bd||{};return r2(DEN.reduce((t,d)=>t+(Number(bd[d])||0)*d,0)+(Number(bd.x)||0))}
+function readBd(){const o={};DEN.forEach(d=>{const n=Math.floor(num('#bd_'+d));if(n>0)o[d]=n});const x=r2(num('#bd_x'));if(x>0)o.x=x;return o}
+function bdSum(exp){const o=readBd(),t=bdTotal(o);DEN.forEach(d=>{const e=$('#bs_'+d);if(e)e.textContent=o[d]?peso(o[d]*d):''});const e=$('#bd_t');if(e)e.textContent=peso(t);
+ if(Object.keys(o).length)$('#cd').value=t;cdDiff(exp)}
+function showBd(id){const r=DB.rec.find(x=>x.id===id);if(!r||!r.bd)return;
+ modal(`<h2>🧾 Bilang ng cash — ${fmtDate(r.d)}</h2>${DEN.filter(d=>r.bd[d]).map(d=>`<div class="li"><span>₱${d.toLocaleString('en-PH')} × ${r.bd[d]}</span><b>${peso(d*r.bd[d])}</b></div>`).join('')}${r.bd.x?`<div class="li"><span>Iba pa</span><b>${peso(r.bd.x)}</b></div>`:''}<div class="li"><span><b>Kabuuan</b></span><b>${peso(bdTotal(r.bd))}</b></div><button class="btn sec" onclick="closeModal()">Isara</button>`)}
 function cdDiff(exp){const cn=num('#cd'),lv=num('#cl'),df=r2(cn-exp),tk=r2(cn-lv),e=$('#cdi');if(!e)return;
  e.innerHTML=(df===0?'✅ Tama ang cash':(df>0?'⚠️ Sobra: <b>':'⚠️ Kulang: <b>')+peso(Math.abs(df))+'</b>')+(lv>cn?'<br>⚠️ Mas malaki ang iiwan kaysa sa cash sa kaha':'')+`<div style="${GRN}"><small>💵 CASH NA IUWI</small><br><b style="font-size:26px;color:#15803d">${peso(Math.max(0,tk))}</b><br><small>🏪 Iiwan sa drawer: <b>${peso(lv)}</b></small></div>`}
 function doClose(exp){const d=today(),F=dayFigs(d),counted=r2(num('#cd')),left=r2(num('#cl'));
  if(left>counted)return toast('⚠️ Mas malaki ang iiwan kaysa sa cash na nabilang');
  const take=r2(counted-left);
- upRec('close_'+d,{k:'close',d,i:r2(F.T.i),o:r2(F.T.o),p:r2(F.T.p),n:F.T.n,open:F.op.v,add:F.add,exp,counted,diff:r2(counted-exp),left,take,by:isAdmin?'Admin':'Staff',t:Date.now()});
+ upRec('close_'+d,{k:'close',d,i:r2(F.T.i),o:r2(F.T.o),p:r2(F.T.p),n:F.T.n,open:F.op.v,add:F.add,exp,counted,diff:r2(counted-exp),left,take,bd:(()=>{const b=readBd();return Object.keys(b).length?b:null})(),by:isAdmin?'Admin':'Staff',t:Date.now()});
  DB.s.drawer=left;
  if(DB.sy.url&&!DB.sy.mq.includes(d))DB.sy.mq.push(d);
  save();closeModal();render();toast('✅ Naisara. Iuwi: '+peso(take)+(DB.sy.url?' — ipapadala ang email':''))}
 function closesHTML(){const CL=DB.rec.filter(r=>r.k==='close'&&!r.del&&(!H.from||r.d>=H.from)&&(!H.to||r.d<=H.to)).sort((a,b)=>a.d<b.d?1:-1);
  if(!CL.length)return '';
- return `<div class="card"><h2>🔒 Mga Pagsasara ng Araw</h2><div class="tw"><table><tr><th>Petsa</th><th>Pasok</th><th>Labas</th><th>Tubo</th><th>Cash</th><th>Diff</th><th>Iniwan</th><th>Iniuwi</th></tr>${CL.map(r=>`<tr><td>${esc(r.d.slice(5))}</td><td class="pos">${peso(r.i)}</td><td class="neg">${peso(r.o)}</td><td class="pos">${peso(r.p)}</td><td>${peso(r.counted)}</td><td class="${r.diff<0?'neg':'pos'}">${r.diff?peso(r.diff):'✔'}</td><td>${r.left!==undefined?peso(r.left):'–'}</td><td><b>${r.take!==undefined?peso(r.take):'–'}</b></td></tr>`).join('')}</table></div></div>`}
+ return `<div class="card"><h2>🔒 Mga Pagsasara ng Araw</h2><div class="tw"><table><tr><th>Petsa</th><th>Pasok</th><th>Labas</th><th>Tubo</th><th>Cash</th><th>Diff</th><th>Iniwan</th><th>Iniuwi</th><th></th></tr>${CL.map(r=>`<tr><td>${esc(r.d.slice(5))}</td><td class="pos">${peso(r.i)}</td><td class="neg">${peso(r.o)}</td><td class="pos">${peso(r.p)}</td><td>${peso(r.counted)}</td><td class="${r.diff<0?'neg':'pos'}">${r.diff?peso(r.diff):'✔'}</td><td>${r.left!==undefined?peso(r.left):'–'}</td><td><b>${r.take!==undefined?peso(r.take):'–'}</b></td><td>${r.bd?`<button class="ib" onclick="showBd('${r.id}')">🧾</button>`:''}</td></tr>`).join('')}</table></div></div>`}
 function dayCheck(){if(!DB||lastDay===today())return;lastDay=today();H.from=H.to=today();render();if(!openFor(today()).set&&$('#modal').style.display!=='flex')openCashModal()}
 async function askOpen(){if(DB.sy.url){try{await Promise.race([syncNow(),new Promise(r=>setTimeout(r,6000))])}catch(e){}}
  if(!openFor(today()).set&&$('#modal').style.display!=='flex')openCashModal()}
@@ -717,7 +736,11 @@ async function doCode(){let o;try{o=JSON.parse(decodeURIComponent(escape(atob($(
  if(!o||!/^https:\/\/script\.google\.com\//.test(o.u||'')||!o.k)return toast('❌ Hindi valid na code');
  const Y=DB.sy,ou=Y.url,ok=Y.key;Y.url=o.u;Y.key=o.k;
  try{await call({a:'ping'})}catch(e){Y.url=ou;Y.key=ok;return toast('❌ '+friendly(e))}
- closeModal();Y.pushed=0;Y.since=0;Y.sinit=0;Y.su=0;Y.ss='';save(true);render();toast('✅ Nakakonekta. Kinukuha ang data...');syncNow(true)}
+ closeModal();let Z=Y;
+ if((DB.tx.length||DB.rec.length)&&confirm('May laman na ang device na ito ('+DB.tx.length+' transaksyon).\n\nOK = Burahin ang laman nito at gamitin ang data mula sa online (inirerekomenda kung pagsubok lang ang laman).\nCancel = Isama ang laman nito sa online.')){
+  Store.putBk(today()+'_pre-connect-'+Date.now(),JSON.stringify(DB));
+  const nd=migrate(fresh());nd.sy=Object.assign(nd.sy,{url:o.u,key:o.k});DB=nd;SY.clean.clear();Z=DB.sy}
+ Z.pushed=0;Z.since=0;Z.sinit=0;Z.su=0;Z.ss='';save(true);render();toast('✅ Nakakonekta. Kinukuha ang data...');syncNow(true)}
 async function copyCode(){if(!isAdmin)return deny();const Y=DB.sy,c='BCPOS1.'+btoa(unescape(encodeURIComponent(JSON.stringify({u:Y.url,k:Y.key}))));
  if(await copyText(c))toast('✅ Nakopya ang Setup Code');else modal(`<h2>Setup Code</h2><textarea style="min-height:120px;font-size:12px" readonly onclick="this.select()">${esc(c)}</textarea><button class="btn sec" onclick="closeModal()">Isara</button>`)}
 async function saveMailCfg(){if(!isAdmin)return deny();DB.s.email=($('#y_mail').value||'').trim();DB.s.mailHour=Number($('#y_hr').value)||0;save();
